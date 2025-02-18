@@ -1,6 +1,6 @@
 *.csv
 myvenv/
-.streamlit/
+.streamlit/secrets.toml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

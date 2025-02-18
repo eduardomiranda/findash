@@ -1,0 +1,10 @@
+[[pages]]
+path = "painel_despesas.py"
+name = "Análise de Despesas"
+icon = "💸"
+
+
+[[pages]]
+path = "painel_receitas.py"
+name = "Análise de Receitas"
+icon = "💰"
