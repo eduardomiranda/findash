@@ -25,3 +25,16 @@ source  myvenv/bin/activate
 ```sh
 streamlit run painel_streamlit.py 
 ```
+
+
+
+
+# Melhorias
+- Um painel principal com
+	- total de receitas versus despesas
+	- as top 3 maiores despesas
+	- as top 3 maiores receitas
+
+- Custo do projetos
+	- Bem estar
+	- Grouth Mindset

@@ -5,38 +5,14 @@ import pandas as pd
 
 from streamlit_option_menu import option_menu
 
-from data_prep import delecao_colunas_desnecessarias, correcao_tipos_dados, clean_dataframe
-
+from data_prep import data_prep
 from google_drive import download_csv_from_google_drive
 from myplot import barh_chart, pie_chart
+from painel_login import show_login_popup
+from mongo_utils import consulta_varios_documentos
 
 
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
-
-
-
-# Function to show the login popup
-def show_login_popup():
-    with st.form(key='login_form'):
-        st.write("Please log in")
-        username = st.text_input("Username")
-        password = st.text_input("Password", type="password")
-        submit_button = st.form_submit_button("Login")
-
-        if submit_button:
-            if username == st.secrets['authentication'].get("username", '') and password == st.secrets['authentication'].get("password", ''):  # Replace with your authentication logic
-                st.session_state.logged_in = True
-                # st.session_state.username = username
-                st.success("Logged in successfully!")
-                st.rerun() 
-            else:
-                st.error("Invalid username or password")
-
-
-
-
-
-
 
 
 if st.secrets['environment'].get("location", '') == "local":
@@ -57,12 +33,12 @@ if st.session_state.logged_in:
         st.session_state.df = download_csv_from_google_drive(st.secrets['dados']['file_id'])
         df = st.session_state.df
 
-        delecao_colunas_desnecessarias(df)
-        correcao_tipos_dados(df)
-        clean_dataframe(df)
-
-        # st.session_state.df = df
-
+        mongodb_uri     = st.secrets['mongodb'].get("mongodb_uri", '')
+        db_name         = st.secrets['mongodb'].get("mongodb_db", '')
+        collection_name = st.secrets['mongodb'].get("mongodb_collection_data_prep", '')
+        query = {}
+        condicoes = consulta_varios_documentos( mongodb_uri, db_name, collection_name, query )
+        data_prep(df, condicoes)
     else:
         df = st.session_state.df
 
@@ -84,7 +60,7 @@ if st.session_state.logged_in:
     if option == options[0] :
 
         df["Data efetiva"] = pd.to_datetime(df["Data efetiva"]).dt.date
-        df =  df.loc[(df['Data efetiva'] > inicio) & (df['Data efetiva'] <= fim)]
+        df =  df.loc[(df['Data efetiva'] >= inicio) & (df['Data efetiva'] <= fim)]
 
 
         df = df[ df['Tipo'] == 'Despesa']

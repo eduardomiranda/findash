@@ -39,8 +39,16 @@ def  correcao_tipos_dados(df):
 
 
 
-def renomeacao_campos(df):
-    pass
+def rename(df, condicoes):
+
+    for condicao in condicoes:
+        dataframe_column_name = condicao.get("dataframe_column_name", None)
+
+        if dataframe_column_name:
+            old_value = condicao.get("old_value", None)
+            new_value = condicao.get("new_value", None)
+
+            df[dataframe_column_name] = df[dataframe_column_name].replace(old_value, new_value)
 
 
 
@@ -51,10 +59,12 @@ def remover_registros_investimentos(df):
     df.drop(index_investimentos, inplace=True)
 
 
+
 def remover_registros_transferencias(df):
 
     index_transferencias = df[ df['Categoria'] == 'Transferência' ].index
     df.drop(index_transferencias, inplace=True)
+
 
 
 def remover_registros_cartao_credito(df):
@@ -64,7 +74,13 @@ def remover_registros_cartao_credito(df):
 
 
 
-def clean_dataframe(df):
+def data_prep(df, condicoes=[]):
+    delecao_colunas_desnecessarias(df)
+    correcao_tipos_dados(df)
     remover_registros_investimentos(df)
     remover_registros_transferencias(df)
     remover_registros_cartao_credito(df)
+    rename(df, condicoes)
+
+
+
