@@ -22,11 +22,11 @@ streamit_login()
 
 if st.session_state.logged_in:
 
-    df = None
-    if 'df' not in st.session_state:
-        st.session_state.df = get_data(st.secrets['dados']['file_id'])
+    df_dados_bancarios = None
+    if 'df_dados_bancarios' not in st.session_state:
+        st.session_state.df_dados_bancarios = get_data(st.secrets['dados']['file_id_dados_bancarios'])
 
-    df = st.session_state.df
+    df_dados_bancarios = st.session_state.df_dados_bancarios
 
 
 
@@ -40,17 +40,17 @@ if st.session_state.logged_in:
     st.divider()
 
 
-    df["Data efetiva"] = pd.to_datetime(df["Data efetiva"]).dt.date
-    df =  df.loc[(df['Data efetiva'] >= inicio) & (df['Data efetiva'] <= fim)]
+    df_dados_bancarios["Data efetiva"] = pd.to_datetime(df_dados_bancarios["Data efetiva"]).dt.date
+    df_dados_bancarios =  df_dados_bancarios.loc[(df_dados_bancarios['Data efetiva'] >= inicio) & (df_dados_bancarios['Data efetiva'] <= fim)]
 
 
-    df = df[ (df['Tipo'] == 'Receita') & (~df['Categoria'].isin(['Remunera+', 'Resgate', 'Devolução'])) ]
+    df_dados_bancarios = df_dados_bancarios[ (df_dados_bancarios['Tipo'] == 'Receita') & (~df_dados_bancarios['Categoria'].isin(['Remunera+', 'Resgate', 'Devolução'])) ]
 
-    receitas_totais = locale.currency(df['Valor efetivo'].sum(), grouping=True)
+    receitas_totais = locale.currency(df_dados_bancarios['Valor efetivo'].sum(), grouping=True)
     st.metric("Receitas Totais", receitas_totais, "" )
 
 
-    df_categoria_dresult = df[df['Categoria'] == 'Vendas'].groupby(['Contato'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=True)
+    df_categoria_dresult = df_dados_bancarios[df_dados_bancarios['Categoria'] == 'Vendas'].groupby(['Contato'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=True)
 
     df_groupby_column_name = 'Contato'
     df_column_values_name = 'Valor efetivo'
@@ -62,4 +62,4 @@ if st.session_state.logged_in:
     st.pyplot(chart)
 
 
-    st.dataframe(df)
+    st.dataframe(df_dados_bancarios)

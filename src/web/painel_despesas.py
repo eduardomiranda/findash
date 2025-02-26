@@ -21,11 +21,11 @@ streamit_login()
 
 if st.session_state.logged_in:
 
-    df = None
-    if 'df' not in st.session_state:
-        st.session_state.df = get_data(st.secrets['dados']['file_id'])
+    df_dados_bancarios = None
+    if 'df_dados_bancarios' not in st.session_state:
+        st.session_state.df_dados_bancarios = get_data(st.secrets['dados']['file_id_dados_bancarios'])
 
-    df = st.session_state.df
+    df_dados_bancarios = st.session_state.df_dados_bancarios
 
 
     # Título do aplicativo
@@ -44,17 +44,17 @@ if st.session_state.logged_in:
 
     if option == options[0] :
 
-        df["Data efetiva"] = pd.to_datetime(df["Data efetiva"]).dt.date
-        df =  df.loc[(df['Data efetiva'] >= inicio) & (df['Data efetiva'] <= fim)]
+        df_dados_bancarios["Data efetiva"] = pd.to_datetime(df_dados_bancarios["Data efetiva"]).dt.date
+        df_dados_bancarios =  df_dados_bancarios.loc[(df_dados_bancarios['Data efetiva'] >= inicio) & (df_dados_bancarios['Data efetiva'] <= fim)]
 
 
-        df = df[ df['Tipo'] == 'Despesa']
+        df_dados_bancarios = df_dados_bancarios[ df_dados_bancarios['Tipo'] == 'Despesa']
 
-        gastos_totais = locale.currency(df['Valor efetivo'].sum() , grouping=True)
+        gastos_totais = locale.currency(df_dados_bancarios['Valor efetivo'].sum() , grouping=True)
         st.metric("Gastos Totais", gastos_totais, "" )
 
 
-        df_categoria_dresult = df.groupby(['Categoria'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=False)
+        df_categoria_dresult = df_dados_bancarios.groupby(['Categoria'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=False)
         # st.pyplot(grafico(df_categoria_dresult))
 
         df_groupby_column_name = 'Categoria'
@@ -69,14 +69,14 @@ if st.session_state.logged_in:
 
 
         # Combobox para seleção de categoria
-        categorias = df['Categoria'].unique()
+        categorias = df_dados_bancarios['Categoria'].unique()
         categoria_selecionada = st.selectbox('Selecione a Categoria:', categorias)
 
         # Filtra as subcategorias com base na categoria selecionada
-        subcategorias = df[df['Categoria'] == categoria_selecionada]['Subcategoria'].unique()
+        subcategorias = df_dados_bancarios[df_dados_bancarios['Categoria'] == categoria_selecionada]['Subcategoria'].unique()
 
 
-        df_filtrado = df[df['Categoria'] == categoria_selecionada]
+        df_filtrado = df_dados_bancarios[df_dados_bancarios['Categoria'] == categoria_selecionada]
 
         # Cria o gráfico Matplotlib
         if not df_filtrado.empty:
@@ -114,7 +114,7 @@ if st.session_state.logged_in:
             subcategoria_selecionada = st.selectbox('Selecione a Subcategoria:', subcategorias)
 
             # Filtra os dados com base na categoria e subcategoria selecionadas
-            df_filtrado = df[(df['Categoria'] == categoria_selecionada) & (df['Subcategoria'] == subcategoria_selecionada)]
+            df_filtrado = df_dados_bancarios[(df_dados_bancarios['Categoria'] == categoria_selecionada) & (df_dados_bancarios['Subcategoria'] == subcategoria_selecionada)]
 
             df_dresult = df_filtrado.groupby(['Subcategoria','Contato'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=False)
 
@@ -138,13 +138,13 @@ if st.session_state.logged_in:
 
     elif option == options[1] :
 
-        df["Data efetiva"] = pd.to_datetime(df["Data efetiva"]).dt.date
-        df =  df.loc[(df['Data efetiva'] > inicio) & (df['Data efetiva'] <= fim)]
+        df_dados_bancarios["Data efetiva"] = pd.to_datetime(df_dados_bancarios["Data efetiva"]).dt.date
+        df_dados_bancarios =  df_dados_bancarios.loc[(df_dados_bancarios['Data efetiva'] > inicio) & (df_dados_bancarios['Data efetiva'] <= fim)]
 
 
-        df = df[ df['Projeto'] != 'Sem projeto']
+        df_dados_bancarios = df_dados_bancarios[ df_dados_bancarios['Projeto'] != 'Sem projeto']
 
-        df_projeto_result = df.groupby(['Projeto'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=False)
+        df_projeto_result = df_dados_bancarios.groupby(['Projeto'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=False)
 
         df_groupby_column_name = 'Projeto'
         df_column_values_name = 'Valor efetivo'
@@ -155,4 +155,4 @@ if st.session_state.logged_in:
         chart = barh_chart(df_projeto_result, df_groupby_column_name, df_column_values_name, xlabel, ylabel, title, True)
         st.pyplot(chart)
 
-        st.dataframe(df.sort_values('Valor efetivo', ascending=True))
+        st.dataframe(df_dados_bancarios.sort_values('Valor efetivo', ascending=True))
