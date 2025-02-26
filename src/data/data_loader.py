@@ -1,8 +1,8 @@
 import gdown
 import pandas as pd
+import streamlit as st
 
 from src.database.mongo_connection import consulta_varios_documentos
-from src.data.data_prep import data_prep
 
 
 def download_csv_from_google_drive(file_id):
@@ -54,3 +54,11 @@ def download_google_spreadsheet(file_id, sheet_name):
 
 
 
+
+
+
+# def get_dados_notas_fiscais_emitidas(file_id, sheet_name):
+
+# 	df = download_google_spreadsheet(file_id, sheet_name)
+
+# 	return df
