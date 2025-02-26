@@ -14,12 +14,22 @@ def barh_chart(df, df_groupby_column_name, df_column_values_name, xlabel, ylabel
     # Plot horizontal bars
     bars = ax.barh(df[df_groupby_column_name], df[df_column_values_name], color='#1f77b4', edgecolor='black', alpha=0.8)
 
+    total_width = sum([bar.get_width() for bar in bars])
+
     # Add values at the end of the bars
     for bar, value in zip(bars, df['Valor efetivo']):
+
+        percentual = bar.get_width() / total_width * 100
+        ax.text(10000,
+                bar.get_y() + bar.get_height()/2,
+                f'{percentual:,.2f}%',
+                va='center', ha='left', fontsize=10, fontweight='bold', color='white')
+
         ax.text(bar.get_width() + max(df['Valor efetivo']) * 0.02,  # Position of the text at the end of the bar
                 bar.get_y() + bar.get_height()/2,
                 f'R$ {value:,.2f}',
                 va='center', ha='left', fontsize=10, color='black')
+
 
     # Customize the plot
     ax.set_xlabel(xlabel, fontsize=12, labelpad=10)
