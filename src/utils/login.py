@@ -17,3 +17,16 @@ def show_login_popup():
                 st.rerun() 
             else:
                 st.error("Invalid username or password")
+
+
+
+def streamit_login():
+
+    if st.secrets['environment'].get("location", '') == "local":
+        st.session_state.logged_in = True
+    else:
+        if 'logged_in' not in st.session_state:
+            st.session_state.logged_in = False
+
+        if not st.session_state.logged_in:
+            show_login_popup()

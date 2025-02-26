@@ -14,22 +14,22 @@ from streamlit_option_menu import option_menu
 from src.data.data_prep import data_prep
 from src.utils.google_drive import download_csv_from_google_drive
 from src.utils.myplot import barh_chart, pie_chart
-from src.web.painel_login import show_login_popup
+from src.utils.login import show_login_popup, streamit_login
 from src.database.mongo_connection import consulta_varios_documentos
-
 
 
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
+streamit_login()
 
-if st.secrets['environment'].get("location", '') == "local":
-    st.session_state.logged_in = True
-else:
-    if 'logged_in' not in st.session_state:
-        st.session_state.logged_in = False
+# if st.secrets['environment'].get("location", '') == "local":
+#     st.session_state.logged_in = True
+# else:
+#     if 'logged_in' not in st.session_state:
+#         st.session_state.logged_in = False
 
-    if not st.session_state.logged_in:
-        show_login_popup()
+#     if not st.session_state.logged_in:
+#         show_login_popup()
 
 
 if st.session_state.logged_in:
