@@ -8,3 +8,9 @@ icon = "💸"
 path = "painel_receitas.py"
 name = "Análise de Receitas"
 icon = "💰"
+
+
+[[pages]]
+path = "painel_faturamentos.py"
+name = "Análise dos Faturamentos"
+icon = "🧾"

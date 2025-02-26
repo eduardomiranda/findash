@@ -91,3 +91,29 @@ def pie_chart(df, df_groupby_column_name, df_column_values_name, title, flip_sig
         spine.set_visible(False)
 
     return fig
+
+
+
+
+def receita_bruta_por_produto_e_ano(df_agg):
+
+    # Definindo cores personalizadas para cada produto
+    # cores = ['#F1A104', '#00743F', '#25B396', '#70CED0', '#1E65A7', '#192E53', ] # https://br.pinterest.com/pin/variety-of-orange-green-blue-color-scheme-blue-schemecolorcom--619315386258482814/
+    # cores = ['#BDD1BD', '#85B093', '#568F7C', '#326D6C', '#173C4C', '#07142B', '#000009'] # https://br.pinterest.com/pin/216665432067725843/
+    # cores = ['#32AAB5', '#E7D39A', '#F1AA60', '#F27B68', '#E54787', '#BF219A', '#8E0F9C', '#4B1D91'] # https://br.pinterest.com/pin/6122149487251309/
+    # cores = ['#001236', '#7C66BB', '#FF4F7B', '#FF6E77', '#FF8C73', '#FFBD80', '#FFFDC2', '#BAFAFF', '#00A2C7', '#43B171'] # https://br.pinterest.com/pin/58757970135987348/
+    cores = ['#FF8C73', '#001236', '#43B171', '#EEEEEF', '#00A2C7', '#4B1D91', '#FFBD80' ]
+
+    # Configurando o gráfico
+    fig, ax = plt.subplots(figsize=(10, 6))
+    df_agg.plot(kind='barh', stacked=True, ax=ax, color=cores)
+
+    ax.set_xlabel("Receita Bruta (R$)")
+    ax.set_ylabel("Ano")
+    ax.set_title("Receita Bruta por Produto e Ano")
+    ax.legend(title="Produto", bbox_to_anchor=(1.05, 1), loc='upper left')
+
+    plt.grid(axis="x", linestyle="--", alpha=0.7)
+    plt.tight_layout()
+
+    return fig

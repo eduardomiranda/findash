@@ -52,13 +52,3 @@ def download_google_spreadsheet(file_id, sheet_name):
     return df
 
 
-
-
-
-
-
-# def get_dados_notas_fiscais_emitidas(file_id, sheet_name):
-
-# 	df = download_google_spreadsheet(file_id, sheet_name)
-
-# 	return df
