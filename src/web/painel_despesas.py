@@ -10,7 +10,7 @@ import pandas as pd
 
 from streamlit_option_menu import option_menu
 
-from src.data.data_loader import get_data
+from src.data.data import get_dados_bancarios
 from src.utils.myplot import barh_chart, pie_chart
 from src.utils.login import streamit_login
 
@@ -23,7 +23,7 @@ if st.session_state.logged_in:
 
     df_dados_bancarios = None
     if 'df_dados_bancarios' not in st.session_state:
-        st.session_state.df_dados_bancarios = get_data(st.secrets['dados']['file_id_dados_bancarios'])
+        st.session_state.df_dados_bancarios = get_dados_bancarios(st.secrets['dados']['file_id_dados_bancarios'])
 
     df_dados_bancarios = st.session_state.df_dados_bancarios
 

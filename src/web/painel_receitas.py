@@ -11,7 +11,7 @@ import pandas as pd
 
 from streamlit_option_menu import option_menu
 
-from src.data.data_loader import get_data
+from src.data.data import get_dados_bancarios
 from src.utils.myplot import barh_chart, pie_chart
 from src.utils.login import streamit_login
 
@@ -24,8 +24,7 @@ if st.session_state.logged_in:
 
     df_dados_bancarios = None
     if 'df_dados_bancarios' not in st.session_state:
-        st.session_state.df_dados_bancarios = get_data(st.secrets['dados']['file_id_dados_bancarios'])
-
+        st.session_state.df_dados_bancarios = get_dados_bancarios(st.secrets['dados']['file_id_dados_bancarios'])
     df_dados_bancarios = st.session_state.df_dados_bancarios
 
 
@@ -39,6 +38,7 @@ if st.session_state.logged_in:
 
     st.divider()
 
+    st.title('Dados das contas bancárias')
 
     df_dados_bancarios["Data efetiva"] = pd.to_datetime(df_dados_bancarios["Data efetiva"]).dt.date
     df_dados_bancarios =  df_dados_bancarios.loc[(df_dados_bancarios['Data efetiva'] >= inicio) & (df_dados_bancarios['Data efetiva'] <= fim)]
@@ -50,7 +50,7 @@ if st.session_state.logged_in:
     st.metric("Receitas Totais", receitas_totais, "" )
 
 
-    df_categoria_dresult = df_dados_bancarios[df_dados_bancarios['Categoria'] == 'Vendas'].groupby(['Contato'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=True)
+    df_categoria_result = df_dados_bancarios[df_dados_bancarios['Categoria'] == 'Vendas'].groupby(['Contato'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=True)
 
     df_groupby_column_name = 'Contato'
     df_column_values_name = 'Valor efetivo'
@@ -58,7 +58,7 @@ if st.session_state.logged_in:
     ylabel = 'Contato'
     title  = 'Receitas totais'
 
-    chart = barh_chart(df_categoria_dresult, df_groupby_column_name, df_column_values_name, xlabel, ylabel, title)
+    chart = barh_chart(df_categoria_result, df_groupby_column_name, df_column_values_name, xlabel, ylabel, title)
     st.pyplot(chart)
 
 

@@ -1,18 +1,16 @@
 import gdown
 import pandas as pd
-import streamlit as st
 
 from src.database.mongo_connection import consulta_varios_documentos
 from src.data.data_prep import data_prep
 
 
-def download_csv_from_google_driveas_dataframe(file_id):
+def download_csv_from_google_drive(file_id):
     """
     Downloads a CSV file from Google Drive.
 
     Args:
         file_id (str): The Google Drive file ID (found in the file's shareable link).
-        output_file (str): The name of the output file to save the CSV.
 
     Returns:
         pd.DataFrame: The downloaded CSV file as a pandas DataFrame.
@@ -24,7 +22,7 @@ def download_csv_from_google_driveas_dataframe(file_id):
 
     # Construct the download URL
     url = f"https://drive.google.com/uc?id={file_id}"
-    
+                
     # Download the file
     gdown.download(url, output_file, quiet=False)
     
@@ -36,16 +34,23 @@ def download_csv_from_google_driveas_dataframe(file_id):
 
 
 
-def get_data(file_id):
+def download_google_spreadsheet(file_id, sheet_name):
 
-	df = download_csv_from_google_driveas_dataframe(file_id)
-	
-	mongodb_uri     = st.secrets['mongodb'].get("mongodb_uri", '')
-	db_name         = st.secrets['mongodb'].get("mongodb_db", '')
-	collection_name = st.secrets['mongodb'].get("mongodb_collection_data_prep", '')
-	query = {}
+    """
+    Downloads a Google Spreadsheet from Google Drive.
 
-	condicoes = consulta_varios_documentos( mongodb_uri, db_name, collection_name, query )
-	data_prep(df, condicoes)
+    Args:
+        file_id (str): The Google Drive file ID (found in the file's shareable link).
 
-	return df
+    Returns:
+        pd.DataFrame: The downloaded Google Spreadsheet as a pandas DataFrame.
+    """
+
+    url = f"https://docs.google.com/spreadsheets/d/{file_id}/gviz/tq?tqx=out:csv&sheet={{{sheet_name}}}"
+    df = pd.read_csv(url)
+
+    return df
+
+
+
+
