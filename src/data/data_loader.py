@@ -1,8 +1,12 @@
 import gdown
 import pandas as pd
+import streamlit as st
+
+from src.database.mongo_connection import consulta_varios_documentos
+from src.data.data_prep import data_prep
 
 
-def download_csv_from_google_drive(file_id):
+def download_csv_from_google_driveas_dataframe(file_id):
     """
     Downloads a CSV file from Google Drive.
 
@@ -28,3 +32,20 @@ def download_csv_from_google_drive(file_id):
     df = pd.read_csv(output_file)
     
     return df
+
+
+
+
+def get_data(file_id):
+
+	df = download_csv_from_google_driveas_dataframe(file_id)
+	
+	mongodb_uri     = st.secrets['mongodb'].get("mongodb_uri", '')
+	db_name         = st.secrets['mongodb'].get("mongodb_db", '')
+	collection_name = st.secrets['mongodb'].get("mongodb_collection_data_prep", '')
+	query = {}
+
+	condicoes = consulta_varios_documentos( mongodb_uri, db_name, collection_name, query )
+	data_prep(df, condicoes)
+
+	return df

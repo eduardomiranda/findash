@@ -3,7 +3,6 @@ import sys
 # append the path of the parent directory
 sys.path.append(".")
 
-
 import datetime
 import locale
 import streamlit as st
@@ -11,43 +10,22 @@ import pandas as pd
 
 from streamlit_option_menu import option_menu
 
-from src.data.data_prep import data_prep
-from src.utils.google_drive import download_csv_from_google_drive
+from src.data.data_loader import get_data
 from src.utils.myplot import barh_chart, pie_chart
-from src.utils.login import show_login_popup, streamit_login
-from src.database.mongo_connection import consulta_varios_documentos
+from src.utils.login import streamit_login
 
 
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
 streamit_login()
 
-# if st.secrets['environment'].get("location", '') == "local":
-#     st.session_state.logged_in = True
-# else:
-#     if 'logged_in' not in st.session_state:
-#         st.session_state.logged_in = False
-
-#     if not st.session_state.logged_in:
-#         show_login_popup()
-
-
 if st.session_state.logged_in:
 
     df = None
-
     if 'df' not in st.session_state:
-        st.session_state.df = download_csv_from_google_drive(st.secrets['dados']['file_id'])
-        df = st.session_state.df
+        st.session_state.df = get_data(st.secrets['dados']['file_id'])
 
-        mongodb_uri     = st.secrets['mongodb'].get("mongodb_uri", '')
-        db_name         = st.secrets['mongodb'].get("mongodb_db", '')
-        collection_name = st.secrets['mongodb'].get("mongodb_collection_data_prep", '')
-        query = {}
-        condicoes = consulta_varios_documentos( mongodb_uri, db_name, collection_name, query )
-        data_prep(df, condicoes)
-    else:
-        df = st.session_state.df
+    df = st.session_state.df
 
 
     # Título do aplicativo

@@ -81,6 +81,3 @@ def data_prep(df, condicoes=[]):
     remover_registros_transferencias(df)
     remover_registros_cartao_credito(df)
     rename(df, condicoes)
-
-
-
