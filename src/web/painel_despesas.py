@@ -1,3 +1,9 @@
+import sys
+  
+# append the path of the parent directory
+sys.path.append(".")
+
+
 import datetime
 import locale
 import streamlit as st
@@ -5,11 +11,12 @@ import pandas as pd
 
 from streamlit_option_menu import option_menu
 
-from data_prep import data_prep
-from google_drive import download_csv_from_google_drive
-from myplot import barh_chart, pie_chart
-from painel_login import show_login_popup
-from mongo_utils import consulta_varios_documentos
+from src.data.data_prep import data_prep
+from src.utils.google_drive import download_csv_from_google_drive
+from src.utils.myplot import barh_chart, pie_chart
+from src.web.painel_login import show_login_popup
+from src.database.mongo_connection import consulta_varios_documentos
+
 
 
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
