@@ -1,6 +1,7 @@
 # import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 
 
 def barh_chart(df, df_groupby_column_name, df_column_values_name, xlabel, ylabel, title, flip_sign=False):
@@ -41,6 +42,13 @@ def barh_chart(df, df_groupby_column_name, df_column_values_name, xlabel, ylabel
     ax.set_axisbelow(True)  # Place gridlines below bars
     ax.tick_params(axis='both', which='major', labelsize=10)
 
+    # Formatando o eixo X para exibir valores em reais
+    def formato_reais(x, pos):
+        return f'R$ {x:,.2f}'.replace(",", "X").replace(".", ",").replace("X", ".")
+
+    ax.xaxis.set_major_formatter(ticker.FuncFormatter(formato_reais))
+
+    
     # Remove spines (borders) for a cleaner look
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
@@ -112,6 +120,13 @@ def receita_bruta_por_produto_e_ano(df_agg):
     ax.set_ylabel("Ano")
     ax.set_title("Receita Bruta por Produto e Ano")
     ax.legend(title="Produto", bbox_to_anchor=(1.05, 1), loc='upper left')
+
+    # Formatando o eixo X para exibir valores em reais
+    def formato_reais(x, pos):
+        return f'R$ {x:,.2f}'.replace(",", "X").replace(".", ",").replace("X", ".")
+
+    ax.xaxis.set_major_formatter(ticker.FuncFormatter(formato_reais))
+
 
     plt.grid(axis="x", linestyle="--", alpha=0.7)
     plt.tight_layout()
