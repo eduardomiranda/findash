@@ -40,5 +40,5 @@ if st.session_state.logged_in:
     chart = receita_bruta_por_produto_e_ano(df_agg)
     st.pyplot(chart)
 
-    if st.button("Show me the data!", type="primary"):
+    if st.button("Show me the data!", type="primary", key = "cea9ec91-d4c7-4055-8725-189e276c4fd4"):
         st.dataframe(df_dados_faturamentos)

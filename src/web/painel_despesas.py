@@ -103,7 +103,7 @@ if st.session_state.logged_in:
             chart = barh_chart(df_dresult, df_groupby_column_name, df_column_values_name, xlabel, ylabel, title, True)
             st.pyplot(chart)
 
-            if st.button("Show me the data!", type="primary"):
+            if st.button("Show me the data!", type="primary", key = "6915d7f6-effe-4f58-b589-ae599f594316"):
                 st.dataframe(df_filtrado.sort_values('Valor efetivo', ascending=True))
 
         else:
@@ -132,7 +132,7 @@ if st.session_state.logged_in:
                 chart = barh_chart(df_dresult, df_groupby_column_name, df_column_values_name, xlabel, ylabel, title)
                 st.pyplot(chart)
 
-                if st.button("Show me the data!", type="primary"):
+                if st.button("Show me the data!", type="primary", key = "d9aaea47-f06c-4136-ae31-21cb92530906"):
                     st.dataframe(df_filtrado.sort_values('Valor efetivo', ascending=True))
 
             else:
@@ -158,5 +158,5 @@ if st.session_state.logged_in:
         chart = barh_chart(df_projeto_result, df_groupby_column_name, df_column_values_name, xlabel, ylabel, title, True)
         st.pyplot(chart)
 
-        if st.button("Show me the data!", type="primary"):
+        if st.button("Show me the data!", type="primary", key = "ac31cd5f-e677-4b94-9927-00c5fc1c58e8"):
             st.dataframe(df_dados_bancarios.sort_values('Valor efetivo', ascending=True))

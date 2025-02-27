@@ -63,5 +63,5 @@ if st.session_state.logged_in:
     chart = barh_chart(df_categoria_result, df_groupby_column_name, df_column_values_name, xlabel, ylabel, title)
     st.pyplot(chart)
 
-    if st.button("Show me the data!", type="primary"):
+    if st.button("Show me the data!", type="primary", key="04067110-0e6f-4506-8bb3-be45ac465ec4" ):
         st.dataframe(df_dados_bancarios)
