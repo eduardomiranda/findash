@@ -60,8 +60,8 @@ class dados_faturamentos():
 
     def remocao_notas_emitidas_mas_canceladas(self):
 
-        # Removendo notas fiscais emitidas mas que foram canceladas. Flag ❌
-        self._df = self._df[ self._df['Status\nRecebimento'] != '❌' ]
+        # Filtrando apenas as notas fiscais pagas e pendentes de pagamento
+        self._df = self._df[ self._df['Status\nRecebimento'].isin(['✔️', '🕑']) ]
 
 
     def criacao_coluna_ano(self):
