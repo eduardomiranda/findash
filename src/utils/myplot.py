@@ -165,7 +165,7 @@ def receita_por_ano_produto_tipo(df_agg):
         axes = [axes]
 
     # Loop através de cada ano e criar um gráfico de barras empilhadas
-    for i, ano in enumerate(anos):
+    for i, ano in enumerate(anos[::-1]):
         # Filtrar os dados para o ano atual
         data_ano = df_agg[df_agg['Ano'] == ano]
 
