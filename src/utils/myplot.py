@@ -2,6 +2,14 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+import seaborn as sns
+import numpy as np
+
+
+# Formatando o eixo X para exibir valores em reais
+def formato_reais(x, pos):
+    return f'R$ {x:,.2f}'.replace(",", "X").replace(".", ",").replace("X", ".")
+
 
 
 def barh_chart(df, df_groupby_column_name, df_column_values_name, xlabel, ylabel, title, flip_sign=False):
@@ -41,10 +49,6 @@ def barh_chart(df, df_groupby_column_name, df_column_values_name, xlabel, ylabel
     ax.grid(axis='x', linestyle='--', alpha=0.7)
     ax.set_axisbelow(True)  # Place gridlines below bars
     ax.tick_params(axis='both', which='major', labelsize=10)
-
-    # Formatando o eixo X para exibir valores em reais
-    def formato_reais(x, pos):
-        return f'R$ {x:,.2f}'.replace(",", "X").replace(".", ",").replace("X", ".")
 
     ax.xaxis.set_major_formatter(ticker.FuncFormatter(formato_reais))
 
@@ -121,10 +125,6 @@ def receita_bruta_por_produto_e_ano(df_agg):
     ax.set_title("Receita Bruta por Produto e Ano")
     ax.legend(title="Produto", bbox_to_anchor=(1.05, 1), loc='upper left')
 
-    # Formatando o eixo X para exibir valores em reais
-    def formato_reais(x, pos):
-        return f'R$ {x:,.2f}'.replace(",", "X").replace(".", ",").replace("X", ".")
-
     ax.xaxis.set_major_formatter(ticker.FuncFormatter(formato_reais))
 
     # Adicionando os valores totais ao final de cada barra
@@ -137,3 +137,62 @@ def receita_bruta_por_produto_e_ano(df_agg):
     plt.tight_layout()
 
     return fig
+
+
+
+
+
+
+def receita_por_ano_produto_tipo(df_agg):        
+    # Supondo que o DataFrame tenha as colunas 'Ano', 'Produto', 'Tipo' e 'Valor Serviços(R$)'
+
+    df_agg.rename(columns={'Serviço ou \nLicença?': 'Legenda'}, inplace=True)
+
+
+    # Obter os anos únicos
+    anos = df_agg['Ano'].unique()
+
+    # Criar uma paleta de cores consistente para os produtos
+    produtos = df_agg['Produto'].unique()
+    paleta_cores = sns.color_palette("husl", len(produtos))  # Ou use outra paleta de sua preferência
+    cores_por_produto = dict(zip(produtos, paleta_cores))
+
+    # Criar subplots para cada ano
+    fig, axes = plt.subplots(len(anos), 1, figsize=(12, 6 * len(anos)))
+
+    # Se houver apenas um ano, 'axes' não será um array, então precisamos tratar esse caso
+    if len(anos) == 1:
+        axes = [axes]
+
+    # Loop através de cada ano e criar um gráfico de barras empilhadas
+    for i, ano in enumerate(anos):
+        # Filtrar os dados para o ano atual
+        data_ano = df_agg[df_agg['Ano'] == ano]
+
+        # Criar uma tabela pivô para separar Produto e Serviço
+        pivot_data = data_ano.pivot_table(index='Produto', columns='Legenda', values='Valor Serviços(R$)', aggfunc='sum', fill_value=0)
+
+
+        # Ordenar os produtos para garantir consistência visual
+        pivot_data = pivot_data.reindex(produtos, fill_value=0)
+
+        # Criar o gráfico de barras empilhadas
+        pivot_data.plot(kind='barh', stacked=True, ax=axes[i], color=['#4B1D91', '#43B171'])  # Cores para Produto e Serviço
+
+        axes[i].set_xlabel('Receita Bruta (R$)')
+        axes[i].set_ylabel('Produto')
+        axes[i].set_title(f'Receita Bruta por Produto e Tipo no Ano {ano}')
+
+        axes[i].xaxis.set_major_formatter(ticker.FuncFormatter(formato_reais))
+
+
+        # Adicionar os valores nas barras
+        for container in axes[i].containers:
+            axes[i].bar_label(container, fontsize=8, padding=3, labels=[f'R$ {val:,.2f}'.replace(",", "X").replace(".", ",").replace("X", ".") if val != 0 else '' for val in container.datavalues])
+
+
+    plt.grid(axis="x", linestyle="--", alpha=0.7)
+    plt.tight_layout()
+
+    return fig
+

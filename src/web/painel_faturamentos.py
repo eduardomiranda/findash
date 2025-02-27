@@ -12,7 +12,7 @@ import pandas as pd
 from streamlit_option_menu import option_menu
 
 from src.data.dados_faturamentos import dados_faturamentos
-from src.utils.myplot import receita_bruta_por_produto_e_ano
+from src.utils.myplot import receita_bruta_por_produto_e_ano, receita_por_ano_produto_tipo
 from src.utils.login import streamit_login
 
 
@@ -37,8 +37,17 @@ if st.session_state.logged_in:
 
     df_agg = df_dados_faturamentos[df_dados_faturamentos["Serviço ou \nLicença?"].isin(["Licença", "Serviço"])].groupby(["Ano", "Produto"])["Valor Serviços(R$)"].sum().unstack().fillna(0)
 
-    chart = receita_bruta_por_produto_e_ano(df_agg)
-    st.pyplot(chart)
+    fig = receita_bruta_por_produto_e_ano(df_agg)
+    st.pyplot(fig)
+
+    # Agrupar os dados por ano, produto e tipo
+    df_agg = df_dados_faturamentos[df_dados_faturamentos["Serviço ou \nLicença?"].isin(["Licença", "Serviço"])].groupby(['Ano', 'Produto', 'Serviço ou \nLicença?'])['Valor Serviços(R$)'].sum().reset_index()
+
+    fig = receita_por_ano_produto_tipo(df_agg)
+    st.pyplot(fig)
+
 
     if st.button("Show me the data!", type="primary", key = "cea9ec91-d4c7-4055-8725-189e276c4fd4"):
         st.dataframe(df_dados_faturamentos)
+
+

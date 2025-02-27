@@ -31,6 +31,7 @@ streamlit run painel_streamlit.py
 
 # Melhorias
 - Faturados e não recebidos
+- Receitas por clientes
 - Custo do funcionário para a empresa
 - Um painel principal com
 	- total de receitas versus despesas
