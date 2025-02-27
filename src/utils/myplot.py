@@ -48,7 +48,7 @@ def barh_chart(df, df_groupby_column_name, df_column_values_name, xlabel, ylabel
 
     ax.xaxis.set_major_formatter(ticker.FuncFormatter(formato_reais))
 
-    
+
     # Remove spines (borders) for a cleaner look
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
@@ -126,6 +126,11 @@ def receita_bruta_por_produto_e_ano(df_agg):
         return f'R$ {x:,.2f}'.replace(",", "X").replace(".", ",").replace("X", ".")
 
     ax.xaxis.set_major_formatter(ticker.FuncFormatter(formato_reais))
+
+    # Adicionando os valores totais ao final de cada barra
+    for i, total in enumerate(df_agg.sum(axis=1)):
+        ax.text(total * 1.02, i, f'R$ {total:,.2f}'.replace(",", "X").replace(".", ",").replace("X", "."),
+                va='center', ha='left', fontsize=9, color='black')
 
 
     plt.grid(axis="x", linestyle="--", alpha=0.7)
