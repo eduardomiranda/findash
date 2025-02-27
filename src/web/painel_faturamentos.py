@@ -30,7 +30,8 @@ if st.session_state.logged_in:
         dados_fat = dados_faturamentos(file_id, sheet_name) 
 
         st.session_state.df_dados_faturamentos = dados_fat.df
-        df_dados_faturamentos = st.session_state.df_dados_faturamentos
+    
+    df_dados_faturamentos = st.session_state.df_dados_faturamentos
 
     # df_agg = df_dados_faturamentos.groupby(['Ano', 'Produto','Serviço ou \nLicença?'])['Valor Serviços(R$)'].sum()
 
@@ -39,4 +40,5 @@ if st.session_state.logged_in:
     chart = receita_bruta_por_produto_e_ano(df_agg)
     st.pyplot(chart)
 
-    st.dataframe(df_dados_faturamentos)
+    if st.button("Show me the data!", type="primary"):
+        st.dataframe(df_dados_faturamentos)

@@ -30,6 +30,8 @@ streamlit run painel_streamlit.py
 
 
 # Melhorias
+- Faturados e não recebidos
+- Custo do funcionário para a empresa
 - Um painel principal com
 	- total de receitas versus despesas
 	- as top 3 maiores despesas

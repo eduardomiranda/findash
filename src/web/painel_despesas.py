@@ -103,7 +103,8 @@ if st.session_state.logged_in:
             chart = barh_chart(df_dresult, df_groupby_column_name, df_column_values_name, xlabel, ylabel, title, True)
             st.pyplot(chart)
 
-            st.dataframe(df_filtrado.sort_values('Valor efetivo', ascending=True))
+            if st.button("Show me the data!", type="primary"):
+                st.dataframe(df_filtrado.sort_values('Valor efetivo', ascending=True))
 
         else:
             st.write("Nenhum dado encontrado para a seleção atual.")
@@ -131,7 +132,8 @@ if st.session_state.logged_in:
                 chart = barh_chart(df_dresult, df_groupby_column_name, df_column_values_name, xlabel, ylabel, title)
                 st.pyplot(chart)
 
-                st.dataframe(df_filtrado.sort_values('Valor efetivo', ascending=True))
+                if st.button("Show me the data!", type="primary"):
+                    st.dataframe(df_filtrado.sort_values('Valor efetivo', ascending=True))
 
             else:
                 st.write("Nenhum dado encontrado para a seleção atual.")
@@ -156,4 +158,5 @@ if st.session_state.logged_in:
         chart = barh_chart(df_projeto_result, df_groupby_column_name, df_column_values_name, xlabel, ylabel, title, True)
         st.pyplot(chart)
 
-        st.dataframe(df_dados_bancarios.sort_values('Valor efetivo', ascending=True))
+        if st.button("Show me the data!", type="primary"):
+            st.dataframe(df_dados_bancarios.sort_values('Valor efetivo', ascending=True))
