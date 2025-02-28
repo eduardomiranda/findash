@@ -14,6 +14,7 @@ from streamlit_option_menu import option_menu
 from src.data.dados_faturamentos import dados_faturamentos
 from src.utils.myplot import receita_bruta_por_produto_e_ano, receita_por_ano_produto_tipo
 from src.utils.login import streamit_login
+from src.utils.misc import inverter_pontuacao
 
 
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
@@ -23,16 +24,14 @@ streamit_login()
 
 if st.session_state.logged_in:
 
-    df_dados_faturamentos = None
-    if 'df_dados_faturamentos' not in st.session_state:
+    if 'dados_faturamentos' not in st.session_state:
 
         file_id    = st.secrets['dados']['file_id_notas_fiscais_emitidas']
         sheet_name = st.secrets['dados']['sheet_name_notas_fiscais_emitidas']
         dados_fat = dados_faturamentos(file_id, sheet_name) 
 
-        st.session_state.df_dados_faturamentos = dados_fat.df
+        st.session_state.dados_faturamentos = dados_fat
     
-    df_dados_faturamentos = st.session_state.df_dados_faturamentos
 
     # Campo para seleção do ano
     ano_selecionado = st.selectbox("Selecione o ano", range(2025, 2019, -1))
@@ -54,15 +53,15 @@ if st.session_state.logged_in:
 
     st.divider()
 
-    total_servico_ano_selecionado = df_dados_faturamentos.loc[(df_dados_faturamentos.Ano == ano_selecionado) & (df_dados_faturamentos["Serviço ou \nLicença?"] == "Serviço")]["Valor Serviços(R$)"].sum()
-    total_produto_ano_selecionado = df_dados_faturamentos.loc[(df_dados_faturamentos.Ano == ano_selecionado) & (df_dados_faturamentos["Serviço ou \nLicença?"] == "Licença")]["Valor Serviços(R$)"].sum()
+    total_servico_ano_selecionado = st.session_state.dados_faturamentos.get_total_servico(ano_selecionado)
+    total_produto_ano_selecionado = st.session_state.dados_faturamentos.get_total_produto(ano_selecionado)
 
     col31, col32 = st.columns(2)
     with col31:
-        st.metric(f"Total de 🧠 Serviços em {ano_selecionado}", f'R$ {total_servico_ano_selecionado:,.2f}'.replace(",", "X").replace(".", ",").replace("X", "."), "" )
+        st.metric(f"Total de 🧠 Serviços em {ano_selecionado}", inverter_pontuacao(f'R$ {total_servico_ano_selecionado:,.2f}'), "" )
 
     with col32:
-        st.metric(f"Total de 💻 Produto em {ano_selecionado}", f'R$ {total_produto_ano_selecionado:,.2f}'.replace(",", "X").replace(".", ",").replace("X", "."), "" )
+        st.metric(f"Total de 💻 Produto em {ano_selecionado}", inverter_pontuacao(f'R$ {total_produto_ano_selecionado:,.2f}'), "" )
 
     st.divider()
 
@@ -77,7 +76,7 @@ if st.session_state.logged_in:
 
     st.subheader("Racional")
     st.text("Valuation do 🧠 Serviço:")
-    st.subheader(f"R\$ {total_servico_ano_selecionado:,.2f}  x  {margem_servico:,.1f}%  x  {multiplo_servico} = R\$ {valuation_servico:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+    st.subheader(inverter_pontuacao(f"R\$ {total_servico_ano_selecionado:,.2f}  x  {margem_servico:,.1f}%  x  {multiplo_servico} = R\$ {valuation_servico:,.2f}"))
     
     st.text("Valuation do 💻 Produto:")
-    st.subheader(f"R\$ {total_produto_ano_selecionado:,.2f}  x  {margem_produto:,.1f}%  x  {multiplo_produto} = R\$ {valuation_produto:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+    st.subheader(inverter_pontuacao(f"R\$ {total_produto_ano_selecionado:,.2f}  x  {margem_produto:,.1f}%  x  {multiplo_produto} = R\$ {valuation_produto:,.2f}"))

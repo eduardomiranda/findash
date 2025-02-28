@@ -68,3 +68,12 @@ class dados_faturamentos():
 
         # Criando uma coluna com o ano da emissão da nota fiscal
         self._df['Ano'] = pd.DatetimeIndex(self._df['Emissão']).year
+
+
+
+    def get_total_servico(self, ano):
+        return self._df.loc[(self._df.Ano == ano) & (self._df["Serviço ou \nLicença?"] == "Serviço")]["Valor Serviços(R$)"].sum()
+
+
+    def get_total_produto(self, ano):
+        return self._df.loc[(self._df.Ano == ano) & (self._df["Serviço ou \nLicença?"] == "Licença")]["Valor Serviços(R$)"].sum()
