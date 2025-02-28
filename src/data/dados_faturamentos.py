@@ -79,6 +79,14 @@ class dados_faturamentos():
         return self._df.loc[(self._df.Ano == ano) & (self._df["Serviço ou \nLicença?"] == "Licença")]["Valor Serviços(R$)"].sum()
 
 
+    def get_total_pendente_recebimento(self):
+        return self._df[ self._df['Status\nRecebimento'] == '🕑']["Valor Serviços(R$)"].sum()
+
+
+    def get_notas_pendente_recebimento(self):
+        return self._df[ self._df['Status\nRecebimento'] == '🕑']
+
+
     def get_receita_bruta_por_produto_e_ano(self):
         return self._df[self._df["Serviço ou \nLicença?"].isin(["Licença", "Serviço"])].groupby(["Ano", "Produto"])["Valor Serviços(R$)"].sum().unstack().fillna(0)
 

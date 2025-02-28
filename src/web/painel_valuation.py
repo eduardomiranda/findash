@@ -14,7 +14,7 @@ from streamlit_option_menu import option_menu
 from src.data.dados_faturamentos import dados_faturamentos
 from src.utils.myplot import receita_bruta_por_produto_e_ano, receita_por_ano_produto_tipo
 from src.utils.login import streamit_login
-from src.utils.misc import inverter_pontuacao
+from src.utils.misc import formar_valor_monetario, inverter_pontuacao
 
 
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
@@ -58,10 +58,10 @@ if st.session_state.logged_in:
 
     col31, col32 = st.columns(2)
     with col31:
-        st.metric(f"Total de 🧠 Serviços em {ano_selecionado}", inverter_pontuacao(f'R$ {total_servico_ano_selecionado:,.2f}'), "" )
+        st.metric(f"Total de 🧠 Serviços em {ano_selecionado}", formar_valor_monetario(total_servico_ano_selecionado), "" )
 
     with col32:
-        st.metric(f"Total de 💻 Produto em {ano_selecionado}", inverter_pontuacao(f'R$ {total_produto_ano_selecionado:,.2f}'), "" )
+        st.metric(f"Total de 💻 Produto em {ano_selecionado}", formar_valor_monetario(total_produto_ano_selecionado), "" )
 
     st.divider()
 
@@ -70,7 +70,7 @@ if st.session_state.logged_in:
     valor_total = valuation_servico + valuation_produto
 
     st.title(f"🤑 Valuation da companhia em {ano_selecionado}")
-    st.metric("", f'R$ {valor_total:,.2f}'.replace(",", "X").replace(".", ",").replace("X", "."), "" )
+    st.metric("", formar_valor_monetario(valor_total), "" )
 
     st.divider()
 

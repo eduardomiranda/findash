@@ -14,6 +14,7 @@ from streamlit_option_menu import option_menu
 from src.data.dados_faturamentos import dados_faturamentos
 from src.utils.myplot import receita_bruta_por_produto_e_ano, receita_por_ano_produto_tipo
 from src.utils.login import streamit_login
+from src.utils.misc import formar_valor_monetario
 
 
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
@@ -32,6 +33,13 @@ if st.session_state.logged_in:
 
         st.session_state.dados_faturamentos = dados_fat
     
+    a_receber = st.session_state.dados_faturamentos.get_total_pendente_recebimento()
+
+    st.metric("Valores a receber", formar_valor_monetario(a_receber), "" )
+
+    if st.button("Show me the data!", type="primary", key = "4f71f641-6fba-4a11-8a4e-232bee9defc2"):
+        st.dataframe(st.session_state.dados_faturamentos.get_notas_pendente_recebimento())
+
 
     df_agg = st.session_state.dados_faturamentos.get_receita_bruta_por_produto_e_ano()
     fig = receita_bruta_por_produto_e_ano(df_agg)
