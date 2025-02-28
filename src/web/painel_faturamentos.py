@@ -22,32 +22,25 @@ streamit_login()
 
 if st.session_state.logged_in:
 
-    df_dados_faturamentos = None
-    if 'df_dados_faturamentos' not in st.session_state:
+    st.text('⚠️ Aqui estão sendo considerados o valor bruto das notas fiscais emitidas e não o valor líquido recebido!')
+
+    if 'dados_faturamentos' not in st.session_state:
 
         file_id    = st.secrets['dados']['file_id_notas_fiscais_emitidas']
         sheet_name = st.secrets['dados']['sheet_name_notas_fiscais_emitidas']
         dados_fat = dados_faturamentos(file_id, sheet_name) 
 
-        st.session_state.df_dados_faturamentos = dados_fat.df
+        st.session_state.dados_faturamentos = dados_fat
     
-    df_dados_faturamentos = st.session_state.df_dados_faturamentos
 
-    # df_agg = df_dados_faturamentos.groupby(['Ano', 'Produto','Serviço ou \nLicença?'])['Valor Serviços(R$)'].sum()
-
-    df_agg = df_dados_faturamentos[df_dados_faturamentos["Serviço ou \nLicença?"].isin(["Licença", "Serviço"])].groupby(["Ano", "Produto"])["Valor Serviços(R$)"].sum().unstack().fillna(0)
-
+    df_agg = st.session_state.dados_faturamentos.get_receita_bruta_por_produto_e_ano()
     fig = receita_bruta_por_produto_e_ano(df_agg)
     st.pyplot(fig)
 
-    # Agrupar os dados por ano, produto e tipo
-    df_agg = df_dados_faturamentos[df_dados_faturamentos["Serviço ou \nLicença?"].isin(["Licença", "Serviço"])].groupby(['Ano', 'Produto', 'Serviço ou \nLicença?'])['Valor Serviços(R$)'].sum().reset_index()
-
+    df_agg = st.session_state.dados_faturamentos.get_receita_por_ano_produto_tipo()
     fig = receita_por_ano_produto_tipo(df_agg)
     st.pyplot(fig)
 
 
     if st.button("Show me the data!", type="primary", key = "cea9ec91-d4c7-4055-8725-189e276c4fd4"):
-        st.dataframe(df_dados_faturamentos)
-
-
+        st.dataframe(st.session_state.dados_faturamentos.df)

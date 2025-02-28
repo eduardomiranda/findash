@@ -77,3 +77,12 @@ class dados_faturamentos():
 
     def get_total_produto(self, ano):
         return self._df.loc[(self._df.Ano == ano) & (self._df["Serviço ou \nLicença?"] == "Licença")]["Valor Serviços(R$)"].sum()
+
+
+    def get_receita_bruta_por_produto_e_ano(self):
+        return self._df[self._df["Serviço ou \nLicença?"].isin(["Licença", "Serviço"])].groupby(["Ano", "Produto"])["Valor Serviços(R$)"].sum().unstack().fillna(0)
+
+    
+    def get_receita_por_ano_produto_tipo(self): 
+        # Agrupar os dados por ano, produto e tipo
+        return self._df[self._df["Serviço ou \nLicença?"].isin(["Licença", "Serviço"])].groupby(['Ano', 'Produto', 'Serviço ou \nLicença?'])['Valor Serviços(R$)'].sum().reset_index()
