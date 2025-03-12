@@ -30,6 +30,7 @@ streamlit run painel_streamlit.py
 
 
 # Melhorias
+- Data Formulator icon Data Formulator: Create Rich Visualizations with AI <https://github.com/microsoft/data-formulator>
 - Receitas por clientes
 - Custo do funcionário para a empresa
 - Um painel principal com
@@ -40,3 +41,4 @@ streamlit run painel_streamlit.py
 - Custo do projetos
 	- Bem estar
 	- Grouth Mindset
+Categoria: encontro time técnico, festa da empresa

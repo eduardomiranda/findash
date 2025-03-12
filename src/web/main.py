@@ -12,7 +12,11 @@ from st_pages import add_page_title, get_nav_from_toml
 # If you want to use the no-sections version, this
 # defaults to looking in .streamlit/pages.toml, so you can
 # just call `get_nav_from_toml()`
-nav = get_nav_from_toml(".streamlit/pages.toml")
+
+if st.secrets['environment'].get("location", '') == "local":
+    nav = get_nav_from_toml(".streamlit/pages_local.toml")
+else:
+    nav = get_nav_from_toml(".streamlit/pages.toml")
 
 # st.logo("logo.png")
 
