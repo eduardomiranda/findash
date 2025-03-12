@@ -84,7 +84,7 @@ class dados_faturamentos():
 
 
     def get_notas_pendente_recebimento(self):
-        return self._df[ self._df['Status\nRecebimento'] == '🕑']
+        return self._df[ self._df['Status\nRecebimento'] == '🕑'].sort_values("Valor Serviços(R$)", ascending=False)
 
 
     def get_receita_bruta_por_produto_e_ano(self):
