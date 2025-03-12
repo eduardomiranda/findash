@@ -45,10 +45,8 @@ if st.session_state.logged_in:
 
     df_categoria_result = dados_bancarios.get_vendas_por_contato(inicio, fim)
 
-    df_groupby_column_name = 'Contato'
-    df_column_values_name = 'Valor efetivo'
-    xlabel = 'Valor Efetivo (R$)'
-    ylabel = 'Contato'
+    ylabel = df_groupby_column_name = df_categoria_result.columns.values[0]
+    xlabel = df_column_values_name = df_categoria_result.columns.values[1]
     title  = 'Receitas totais'
 
     chart = barh_chart(df_categoria_result, df_groupby_column_name, df_column_values_name, xlabel, ylabel, title)
