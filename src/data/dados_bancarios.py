@@ -133,3 +133,71 @@ class dados_bancarios():
 
         df = self.filtrar_receita_por_periodo(inicio, fim)
         return df[df['Categoria'] == 'Vendas'].groupby(['Contato'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=True)
+
+
+
+    def filtrar_despesas_por_periodo(self, inicio, fim):
+
+        df = self.filtrar_dados_por_periodo(inicio, fim)
+        return df[ df['Tipo'] == 'Despesa']
+
+
+    def gastos_totais_no_periodo(self, inicio, fim):
+
+        df = self.filtrar_despesas_por_periodo(inicio, fim)
+        gastos_totais = df['Valor efetivo'].sum()
+        return gastos_totais
+
+
+    def get_gastos_totais_por_categoria(self, inicio, fim):
+
+        df = self.filtrar_despesas_por_periodo(inicio, fim)
+        return df.groupby(['Categoria'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=False)
+
+
+    def get_categorias(self, inicio, fim):
+
+        df = self.filtrar_despesas_por_periodo(inicio, fim)
+        return df['Categoria'].unique()
+
+
+    def get_dados_por_categoria(self, inicio, fim, categoria):
+
+        df = self.filtrar_despesas_por_periodo(inicio, fim)
+        return df[df['Categoria'] == categoria].sort_values('Valor efetivo', ascending=True)
+
+
+    def get_subcategorias(self, inicio, fim, categoria):
+
+        df = self.filtrar_despesas_por_periodo(inicio, fim)
+        return df[df['Categoria'] == categoria]['Subcategoria'].unique()
+
+
+    def existem_dados_para_a_categoria(self, inicio, fim, categoria):
+
+        df = self.filtrar_despesas_por_periodo(inicio, fim)
+        return df[df['Categoria'] == categoria].empty
+
+
+    def get_gastos_totais_por_categoria_e_subcategoria(self, inicio, fim, categoria):
+
+        df = self.get_dados_por_categoria(inicio, fim, categoria)
+        return df.groupby(['Categoria','Subcategoria'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=False)
+
+
+    def get_gastos_totais_por_categoria_e_contato(self, inicio, fim, categoria):
+
+        df = self.get_dados_por_categoria(inicio, fim, categoria)
+        return df.groupby(['Categoria','Contato'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=False)
+
+
+    def get_gastos_de_projetos(self, inicio, fim):
+
+        df = self.filtrar_despesas_por_periodo(inicio, fim)
+        return df[ df['Projeto'] != 'Sem projeto']
+
+
+    def get_gastos_totais_por_projeto(self, inicio, fim):
+
+        df = self.get_gastos_de_projetos(inicio, fim)
+        return df.groupby(['Projeto'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=False)
