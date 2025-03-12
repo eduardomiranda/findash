@@ -14,6 +14,7 @@ from streamlit_option_menu import option_menu
 from src.data.dados_bancarios import dados_bancarios
 from src.utils.myplot import barh_chart, pie_chart
 from src.utils.login import streamit_login
+from src.utils.misc import formar_valor_monetario
 
 
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
@@ -22,17 +23,13 @@ streamit_login()
 
 if st.session_state.logged_in:
 
-    df_dados_bancarios = None
-    if 'df_dados_bancarios' not in st.session_state:
-        dados_banc = dados_bancarios(st.secrets['dados']['file_id_dados_bancarios'])
-        st.session_state.df_dados_bancarios = dados_banc.df
+    if 'dados_bancarios' not in st.session_state:
+        file_id = st.secrets['dados']['file_id_dados_bancarios']
+        dados_banc = dados_bancarios(file_id)
+        st.session_state.dados_bancarios = dados_banc
 
-    df_dados_bancarios = st.session_state.df_dados_bancarios
+    dados_bancarios = st.session_state.dados_bancarios
 
-
-
-    # Título do aplicativo
-    # st.title('💸 Análise de Despesas')
 
     col11, col12 = st.columns(2)
     inicio = col11.date_input("Início", datetime.date(2024, 1, 1))
@@ -42,17 +39,11 @@ if st.session_state.logged_in:
 
     st.title('Dados das contas bancárias')
 
-    df_dados_bancarios["Data efetiva"] = pd.to_datetime(df_dados_bancarios["Data efetiva"]).dt.date
-    df_dados_bancarios =  df_dados_bancarios.loc[(df_dados_bancarios['Data efetiva'] >= inicio) & (df_dados_bancarios['Data efetiva'] <= fim)]
+    receitas_totais = dados_bancarios.receitas_totais_no_periodo(inicio, fim)
+    st.metric("Receitas Totais", formar_valor_monetario(receitas_totais), "" )
 
 
-    df_dados_bancarios = df_dados_bancarios[ (df_dados_bancarios['Tipo'] == 'Receita') & (~df_dados_bancarios['Categoria'].isin(['Remunera+', 'Resgate', 'Devolução'])) ]
-
-    receitas_totais = locale.currency(df_dados_bancarios['Valor efetivo'].sum(), grouping=True)
-    st.metric("Receitas Totais", receitas_totais, "" )
-
-
-    df_categoria_result = df_dados_bancarios[df_dados_bancarios['Categoria'] == 'Vendas'].groupby(['Contato'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=True)
+    df_categoria_result = dados_bancarios.get_vendas_por_contato(inicio, fim)
 
     df_groupby_column_name = 'Contato'
     df_column_values_name = 'Valor efetivo'

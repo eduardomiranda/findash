@@ -72,7 +72,7 @@ class dados_bancarios():
 
         # Convert the string column to datetime with the correct format
         self._df['Data efetiva'] = pd.to_datetime(self._df['Data efetiva'], dayfirst=True, format='%d/%m/%Y')
-
+        self._df['Data efetiva'] = pd.to_datetime(self._df['Data efetiva']).dt.date
 
 
 
@@ -108,3 +108,28 @@ class dados_bancarios():
 
         index_cartao_credito = self._df[ self._df['Subcategoria'] == 'Cartão de créditos' ].index
         self._df.drop(index_cartao_credito, inplace=True)
+
+
+    def filtrar_dados_por_periodo(self, inicio, fim):
+
+        return self._df.loc[(self._df['Data efetiva'] >= inicio) & (self._df['Data efetiva'] <= fim)]
+
+
+
+    def filtrar_receita_por_periodo(self, inicio, fim):
+
+        df = self.filtrar_dados_por_periodo(inicio, fim)
+        return df[ (df['Tipo'] == 'Receita') & (~df['Categoria'].isin(['Remunera+', 'Resgate', 'Devolução'])) ]
+
+
+    def receitas_totais_no_periodo(self, inicio, fim):
+
+        df = self.filtrar_receita_por_periodo(inicio, fim)
+        receitas_totais = df['Valor efetivo'].sum()
+        return receitas_totais
+
+
+    def get_vendas_por_contato(self, inicio, fim):
+
+        df = self.filtrar_receita_por_periodo(inicio, fim)
+        return df[df['Categoria'] == 'Vendas'].groupby(['Contato'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=True)

@@ -33,6 +33,7 @@ if st.session_state.logged_in:
 
         st.session_state.dados_faturamentos = dados_fat
     
+    
     a_receber = st.session_state.dados_faturamentos.get_total_pendente_recebimento()
 
     st.metric("Valores a receber", formar_valor_monetario(a_receber), "" )
