@@ -1,8 +1,7 @@
 import pandas as pd
 import streamlit as st
 
-from src.data.data_loader import download_csv_from_google_drive
-from src.database.mongo_connection import consulta_varios_documentos
+from src.data.data_loader import download_csv_from_google_drive, download_google_spreadsheet
 
 class dados_bancarios():
 
@@ -26,14 +25,11 @@ class dados_bancarios():
 
 
     def get_conditions_dados_bancarios(self):
-        
-        mongodb_uri     = st.secrets['mongodb'].get("mongodb_uri", '')
-        db_name         = st.secrets['mongodb'].get("mongodb_db", '')
-        collection_name = st.secrets['mongodb'].get("mongodb_collection_data_prep", '')
-        query = {}
 
-        condicoes = consulta_varios_documentos( mongodb_uri, db_name, collection_name, query )
-        return condicoes
+        file_id = st.secrets['dados']['file_id_data_prep']
+        sheet_name = 'column_rename'
+
+        return download_google_spreadsheet(file_id, sheet_name)
 
 
 
@@ -78,14 +74,14 @@ class dados_bancarios():
 
     def rename(self):
 
-        for condicao in self.condicoes:
-            dataframe_column_name = condicao.get("dataframe_column_name", None)
+        for index, row in self.condicoes.iterrows():
+            column_name = row['column_name']
 
-            if dataframe_column_name:
-                old_value = condicao.get("old_value", None)
-                new_value = condicao.get("new_value", None)
+            if column_name:
+                old_value = row['old_value']
+                new_value = row['new_value']
 
-                self._df[dataframe_column_name] = self._df[dataframe_column_name].replace(old_value, new_value)
+                self._df[column_name] = self._df[column_name].replace(old_value, new_value)
 
 
 

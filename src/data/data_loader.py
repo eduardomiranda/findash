@@ -47,8 +47,5 @@ def download_google_spreadsheet(file_id, sheet_name):
     """
 
     url = f"https://docs.google.com/spreadsheets/d/{file_id}/gviz/tq?tqx=out:csv&sheet={{{sheet_name}}}"
-    df = pd.read_csv(url)
-
-    return df
-
+    return pd.read_csv(url)
 
