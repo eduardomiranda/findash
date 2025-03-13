@@ -14,3 +14,9 @@ icon = "💰"
 path = "painel_faturamentos.py"
 name = "Análise dos Faturamentos"
 icon = "🧾"
+
+
+[[pages]]
+path = "painel_llc.py"
+name = "Century Data LLC"
+icon = "🇺🇸"

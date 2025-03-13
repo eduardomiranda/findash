@@ -20,3 +20,9 @@ icon = "🧾"
 path = "painel_valuation.py"
 name = "Valuation"
 icon = "🤑"
+
+
+[[pages]]
+path = "painel_llc.py"
+name = "Century Data LLC"
+icon = "🇺🇸"

@@ -26,7 +26,7 @@ class dados_bancarios():
 
     def get_conditions_dados_bancarios(self):
 
-        file_id = st.secrets['dados']['file_id_data_prep']
+        file_id = st.secrets['dados']['file_id_data_prep_dados_bancarios']
         sheet_name = 'column_rename'
 
         return download_google_spreadsheet(file_id, sheet_name)
