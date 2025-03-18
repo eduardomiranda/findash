@@ -1,5 +1,6 @@
 import pandas as pd
 import streamlit as st
+from datetime import datetime, date
 
 from src.data.data_loader import download_csv_from_google_drive, download_google_spreadsheet
 
@@ -15,6 +16,7 @@ class dados_bancarios():
         self.remover_registros_investimentos()
         self.remover_registros_transferencias()
         self.remover_registros_cartao_credito()
+        self.anonimizacao_dados_salario()
         self.rename()
 
 
@@ -69,6 +71,39 @@ class dados_bancarios():
         # Convert the string column to datetime with the correct format
         self._df['Data efetiva'] = pd.to_datetime(self._df['Data efetiva'], dayfirst=True, format='%d/%m/%Y')
         self._df['Data efetiva'] = pd.to_datetime(self._df['Data efetiva']).dt.date
+
+
+
+    def anonimizacao_dados_salario(self):
+
+        df_aux = self._df
+
+        # Converta a coluna 'Data efetiva' em objetos de data e hora, caso ainda não o tenha feito
+        df_aux['Data efetiva AUX'] = pd.to_datetime(df_aux['Data efetiva'])
+
+        # Extraia o mês e o ano da coluna 'Data efetiva'
+        df_aux['Ano-Mês'] = df_aux['Data efetiva AUX'].dt.to_period('M')
+
+        # Agrupar por mês e somar os salários
+        monthly_salary_expenses = df_aux[(df_aux.Categoria == 'Pessoal') & (df_aux.Subcategoria == 'Salários')].groupby('Ano-Mês')['Valor efetivo'].sum().reset_index()
+
+        # Ajusta a coluna Data efetiva com o último dia de cada mês. Ou seja, na coluna Ano-Mês temos 2023-01, então na coluna Data efetiva teremos 2023-01-31 
+        monthly_salary_expenses['Data efetiva'] = monthly_salary_expenses['Ano-Mês'].dt.to_timestamp(how='end')
+
+        # Adição de colunas importantes para as demais análises
+        monthly_salary_expenses['Categoria'] = 'Pessoal'
+        monthly_salary_expenses['Subcategoria'] = 'Salários'
+        monthly_salary_expenses['Tipo'] = 'Despesa'
+
+        # Remova as linhas de salário originais para privacidade
+        df_aux = df_aux[~((df_aux.Categoria == 'Pessoal') & (df_aux.Subcategoria == 'Salários'))]
+
+        # Mesclar as despesas mensais de salário de volta ao DataFrame original
+        self._df = pd.concat([df_aux, monthly_salary_expenses])
+
+        # Faz a conversão da coluna 'Data efetiva' para o formato de data 
+        self._df['Data efetiva'] = pd.to_datetime(self._df['Data efetiva']).dt.date
+
 
 
 
