@@ -24,11 +24,13 @@ if st.session_state.logged_in:
 
     if 'dados_bancarios' not in st.session_state:
 
-        file_id = st.secrets['dados']['file_id_dados_bancarios']
+        file_id = st.secrets['dados']['dados_bancarios_file_id']
         dados_banc = dados_bancarios(file_id)
         st.session_state.dados_bancarios = dados_banc
 
     dados_bancarios = st.session_state.dados_bancarios
+
+    st.dataframe(dados_bancarios.df)
 
 
     col11, col12 = st.columns(2)
@@ -94,31 +96,31 @@ if st.session_state.logged_in:
 
 
     
-    #     if 0 < len(subcategorias):
-    #         subcategoria_selecionada = st.selectbox('Selecione a Subcategoria:', subcategorias)
+        # if 0 < len(subcategorias):
+        #     subcategoria_selecionada = st.selectbox('Selecione a Subcategoria:', subcategorias)
 
-    #         # Filtra os dados com base na categoria e subcategoria selecionadas
-    #         df_filtrado = df_dados_bancarios[(df_dados_bancarios['Categoria'] == categoria_selecionada) & (df_dados_bancarios['Subcategoria'] == subcategoria_selecionada)]
+        #     # Filtra os dados com base na categoria e subcategoria selecionadas
+        #     df_filtrado = dados_bancarios.df[(dados_bancarios.df['Categoria'] == categoria_selecionada) & (dados_bancarios.df['Subcategoria'] == subcategoria_selecionada)]
 
-    #         df_dresult = df_filtrado.groupby(['Subcategoria','Contato'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=False)
+        #     df_dresult = df_filtrado.groupby(['Subcategoria','Contato'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=False)
 
-    #         # Cria o gráfico Matplotlib
-    #         if not df_filtrado.empty:
+        #     # Cria o gráfico Matplotlib
+        #     if not df_filtrado.empty:
 
-    #             df_groupby_column_name = 'Contato'
-    #             df_column_values_name = 'Valor efetivo'
-    #             xlabel = 'Valor Efetivo (R$)'
-    #             ylabel = 'Contato'
-    #             title  = subcategoria_selecionada
+        #         df_groupby_column_name = 'Contato'
+        #         df_column_values_name = 'Valor efetivo'
+        #         xlabel = 'Valor Efetivo (R$)'
+        #         ylabel = 'Contato'
+        #         title  = subcategoria_selecionada
 
-    #             chart = barh_chart(df_dresult, df_groupby_column_name, df_column_values_name, xlabel, ylabel, title)
-    #             st.pyplot(chart)
+        #         chart = barh_chart(df_dresult, df_groupby_column_name, df_column_values_name, xlabel, ylabel, title)
+        #         st.pyplot(chart)
 
-    #             if st.button("Show me the data!", type="primary", key = "d9aaea47-f06c-4136-ae31-21cb92530906"):
-    #                 st.dataframe(df_filtrado.sort_values('Valor efetivo', ascending=True))
+        #         if st.button("Show me the data!", type="primary", key = "d9aaea47-f06c-4136-ae31-21cb92530906"):
+        #             st.dataframe(df_filtrado.sort_values('Valor efetivo', ascending=True))
 
-    #         else:
-    #             st.write("Nenhum dado encontrado para a seleção atual.")
+        #     else:
+        #         st.write("Nenhum dado encontrado para a seleção atual.")
 
 
     elif option == options[1] :

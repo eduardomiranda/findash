@@ -27,8 +27,8 @@ if st.session_state.logged_in:
 
     if 'dados_faturamentos' not in st.session_state:
 
-        file_id    = st.secrets['dados']['file_id_notas_fiscais_emitidas']
-        sheet_name = st.secrets['dados']['sheet_name_notas_fiscais_emitidas']
+        file_id    = st.secrets['dados']['notas_fiscais_emitidas_file_id']
+        sheet_name = st.secrets['dados']['notas_fiscais_emitidas_sheet_name']
         dados_fat = dados_faturamentos(file_id, sheet_name) 
 
         st.session_state.dados_faturamentos = dados_fat

@@ -24,10 +24,8 @@ streamit_login()
 if st.session_state.logged_in:
 
     if 'dados_ifb' not in st.session_state:
-        file_id = st.secrets['dados']['file_id_ifb']
-
-        file_id_ifb="1HOk0fUlICKpKqzih9dfb_U2NWGOcNL3nbomYKy35prg"
-        sheet_name = st.secrets['dados']['sheet_name_ifb']
+        file_id = st.secrets['dados']['ifb_file_id']
+        sheet_name = st.secrets['dados']['ifb_sheet_name']
 
         dados_ifb = dados_ifb(file_id, sheet_name)
         st.session_state.dados_ifb = dados_ifb

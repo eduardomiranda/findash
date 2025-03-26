@@ -17,6 +17,7 @@ class dados_bancarios():
         self.remover_registros_transferencias()
         self.remover_registros_cartao_credito()
         self.anonimizacao_dados_salario()
+        self.anonimizacao_dados_bonus()
         self.rename()
 
 
@@ -28,7 +29,7 @@ class dados_bancarios():
 
     def get_conditions_dados_bancarios(self):
 
-        file_id = st.secrets['dados']['file_id_data_prep_dados_bancarios']
+        file_id = st.secrets['dados']['dados_bancarios_data_prep_file_id']
         sheet_name = 'column_rename'
 
         return download_google_spreadsheet(file_id, sheet_name)
@@ -74,7 +75,7 @@ class dados_bancarios():
 
 
 
-    def anonimizacao_dados_salario(self):
+    def anonimizacao_dados(self, categoria, subcategoria, tipo):
 
         df_aux = self._df
 
@@ -85,18 +86,18 @@ class dados_bancarios():
         df_aux['Ano-Mês'] = df_aux['Data efetiva AUX'].dt.to_period('M')
 
         # Agrupar por mês e somar os salários
-        monthly_salary_expenses = df_aux[(df_aux.Categoria == 'Pessoal') & (df_aux.Subcategoria == 'Salários')].groupby('Ano-Mês')['Valor efetivo'].sum().reset_index()
+        monthly_salary_expenses = df_aux[(df_aux.Categoria == categoria) & (df_aux.Subcategoria == subcategoria)].groupby('Ano-Mês')['Valor efetivo'].sum().reset_index()
 
         # Ajusta a coluna Data efetiva com o último dia de cada mês. Ou seja, na coluna Ano-Mês temos 2023-01, então na coluna Data efetiva teremos 2023-01-31 
         monthly_salary_expenses['Data efetiva'] = monthly_salary_expenses['Ano-Mês'].dt.to_timestamp(how='end')
 
         # Adição de colunas importantes para as demais análises
-        monthly_salary_expenses['Categoria'] = 'Pessoal'
-        monthly_salary_expenses['Subcategoria'] = 'Salários'
-        monthly_salary_expenses['Tipo'] = 'Despesa'
+        monthly_salary_expenses['Categoria'] = categoria
+        monthly_salary_expenses['Subcategoria'] = subcategoria
+        monthly_salary_expenses['Tipo'] = tipo
 
         # Remova as linhas de salário originais para privacidade
-        df_aux = df_aux[~((df_aux.Categoria == 'Pessoal') & (df_aux.Subcategoria == 'Salários'))]
+        df_aux = df_aux[~((df_aux.Categoria == categoria) & (df_aux.Subcategoria == subcategoria))]
 
         # Mesclar as despesas mensais de salário de volta ao DataFrame original
         self._df = pd.concat([df_aux, monthly_salary_expenses])
@@ -104,6 +105,24 @@ class dados_bancarios():
         # Faz a conversão da coluna 'Data efetiva' para o formato de data 
         self._df['Data efetiva'] = pd.to_datetime(self._df['Data efetiva']).dt.date
 
+
+
+
+    def anonimizacao_dados_salario(self):
+        categoria = 'Pessoal'
+        subcategoria = 'Salários'
+        tipo = 'Despesa'
+
+        self.anonimizacao_dados(categoria, subcategoria, tipo)
+
+
+
+    def anonimizacao_dados_bonus(self):
+        categoria = 'Pessoal'
+        subcategoria = 'Bônus'
+        tipo = 'Despesa'
+
+        self.anonimizacao_dados(categoria, subcategoria, tipo)
 
 
 

@@ -22,7 +22,7 @@ class dados_ifb():
 
     def get_conditions_dados_bancarios(self):
 
-        file_id = st.secrets['dados']['file_id_data_prep_dados_ifb']
+        file_id = st.secrets['dados']['ifb_data_prep_file_id']
         sheet_name = 'column_rename'
 
         return download_google_spreadsheet(file_id, sheet_name)
