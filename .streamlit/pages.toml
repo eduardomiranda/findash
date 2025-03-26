@@ -1,4 +1,9 @@
 [[pages]]
+path = "painel_saldos.py"
+name = "Saldos bancários"
+icon = "🏦"
+
+[[pages]]
 path = "painel_despesas.py"
 name = "Análise de Despesas"
 icon = "💸"

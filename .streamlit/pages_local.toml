@@ -1,4 +1,9 @@
 [[pages]]
+path = "painel_saldos.py"
+name = "Saldos bancários"
+icon = "🏦"
+
+[[pages]]
 path = "painel_despesas.py"
 name = "Análise de Despesas"
 icon = "💸"
@@ -16,10 +21,10 @@ name = "Análise dos Faturamentos"
 icon = "🧾"
 
 
-[[pages]]
-path = "painel_valuation.py"
-name = "Valuation"
-icon = "🤑"
+#[[pages]]
+#path = "painel_valuation.py"
+#name = "Valuation"
+#icon = "🤑"
 
 
 [[pages]]
