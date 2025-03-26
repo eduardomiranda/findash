@@ -40,7 +40,7 @@ if st.session_state.logged_in:
     st.title('Dados das contas bancárias')
 
     receitas_totais = dados_bancarios.receitas_totais_no_periodo(inicio, fim)
-    st.metric("Receitas Totais", formar_valor_monetario(receitas_totais), "" )
+    st.metric("Receitas Totais", formar_valor_monetario(receitas_totais), "" , border = True)
 
 
     df_categoria_result = dados_bancarios.get_vendas_por_contato(inicio, fim)

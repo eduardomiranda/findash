@@ -36,7 +36,7 @@ if st.session_state.logged_in:
     
     a_receber = st.session_state.dados_faturamentos.get_total_pendente_recebimento()
 
-    st.metric("Valores a receber", formar_valor_monetario(a_receber), "" )
+    st.metric("Valores a receber", formar_valor_monetario(a_receber), "" , border = True)
 
     if st.button("Show me the data!", type="primary", key = "4f71f641-6fba-4a11-8a4e-232bee9defc2"):
         st.dataframe(st.session_state.dados_faturamentos.get_notas_pendente_recebimento())

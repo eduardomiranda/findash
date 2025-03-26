@@ -44,7 +44,7 @@ if st.session_state.logged_in:
     if option == options[0] :
 
         gastos_totais = dados_bancarios.gastos_totais_no_periodo(inicio, fim)
-        st.metric("Gastos Totais", formar_valor_monetario(gastos_totais), "" )
+        st.metric("Gastos Totais", formar_valor_monetario(gastos_totais), "", border = True )
 
         df_categoria_dresult = dados_bancarios.get_gastos_totais_por_categoria(inicio, fim)
 
