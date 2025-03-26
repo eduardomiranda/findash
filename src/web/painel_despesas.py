@@ -30,9 +30,6 @@ if st.session_state.logged_in:
 
     dados_bancarios = st.session_state.dados_bancarios
 
-    st.dataframe(dados_bancarios.df)
-
-
     col11, col12 = st.columns(2)
     inicio = col11.date_input("Início", datetime.date(2024, 1, 1))
     fim    = col12.date_input("Fim", datetime.date(2024, 12, 31))

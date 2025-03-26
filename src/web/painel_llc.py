@@ -38,7 +38,7 @@ if st.session_state.logged_in:
     xlabel = df_column_values_name = df_result.columns.values[1]
     title  = 'Century Data LLC'
 
-    chart = barh_chart(df_result, df_groupby_column_name, df_column_values_name, xlabel, ylabel, title)
+    chart = barh_chart(df_result, df_groupby_column_name, df_column_values_name, xlabel, ylabel, title, simbolo_moeda = '$')
     st.pyplot(chart)
 
     if st.button("Show me the data!", type="primary", key="04067110-0e6f-4506-8bb3-be45ac465ec4" ):

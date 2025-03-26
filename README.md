@@ -30,6 +30,7 @@ streamlit run painel_streamlit.py
 
 
 # Melhorias
+- Fazer dupla verificação com envio de código por email
 - Criar um gráfico de gastos mas agrupado por mês
 - Data Formulator icon Data Formulator: Create Rich Visualizations with AI <https://github.com/microsoft/data-formulator>
 - Receitas por clientes

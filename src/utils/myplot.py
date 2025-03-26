@@ -12,7 +12,7 @@ def formato_reais(x, pos):
 
 
 
-def barh_chart(df, df_groupby_column_name, df_column_values_name, xlabel, ylabel, title, flip_sign=False):
+def barh_chart(df, df_groupby_column_name, df_column_values_name, xlabel, ylabel, title, flip_sign=False, simbolo_moeda = "R$"):
         
     if flip_sign:
         df['Valor efetivo'] = df['Valor efetivo'] * -1
@@ -36,7 +36,7 @@ def barh_chart(df, df_groupby_column_name, df_column_values_name, xlabel, ylabel
 
         ax.text(bar.get_width() + max(df['Valor efetivo']) * 0.02,  # Position of the text at the end of the bar
                 bar.get_y() + bar.get_height()/2,
-                f'R$ {value:,.2f}',
+                f'{simbolo_moeda} {value:,.2f}',
                 va='center', ha='left', fontsize=10, color='black')
 
 

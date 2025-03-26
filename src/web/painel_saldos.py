@@ -30,7 +30,7 @@ if st.session_state.logged_in:
 
     dados_saldos = st.session_state.dados_saldos
 
-    st.markdown(f'⚠️ Data da última leitura de saldos: **{converter_data_para_formato_brasileiro(str(dados_saldos.ultima_data))}**')
+    st.markdown(f'⚠️ Os valores apresentados foram obtidos no dia: **{converter_data_para_formato_brasileiro(str(dados_saldos.ultima_data))}**')
 
     col11, col12 = st.columns(2)
     col21, col22 = st.columns(2)
