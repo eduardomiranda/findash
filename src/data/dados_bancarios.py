@@ -12,12 +12,15 @@ class dados_bancarios():
 
         self.delecao_colunas_desnecessarias()
         self.correcao_tipos_dados()
+        self.data_prep()
+        self.remover_registros_categoria_saldo_inicial()
         self.remover_registros_investimentos()
         self.remover_registros_transferencias()
-        self.remover_registros_cartao_credito()
+        self.remover_registros_categoria_devolucao()
+        self.remover_registros_categoria_resgate()
+        # self.remover_registros_cartao_credito()
         self.anonimizacao_dados_salario()
         self.anonimizacao_dados_bonus()
-        self.data_prep()
 
 
     @property
@@ -183,6 +186,23 @@ class dados_bancarios():
         self._df.drop(index_transferencias, inplace=True)
 
 
+    def remover_registros_categoria_saldo_inicial(self):
+
+        index_categoria_resgate = self._df[ (self._df['Tipo'] == 'Saldo inicial') ].index
+        self._df.drop(index_categoria_resgate, inplace=True)
+
+
+    def remover_registros_categoria_devolucao(self):
+
+        index_categoria_resgate = self._df[ (self._df['Tipo'] == 'Receita') & (self._df['Categoria'] == 'Devolução') ].index
+        self._df.drop(index_categoria_resgate, inplace=True)
+
+
+    def remover_registros_categoria_resgate(self):
+
+        index_categoria_resgate = self._df[ (self._df['Tipo'] == 'Receita') & (self._df['Categoria'] == 'Resgate') ].index
+        self._df.drop(index_categoria_resgate, inplace=True)
+
 
     def remover_registros_cartao_credito(self):
 
@@ -199,20 +219,42 @@ class dados_bancarios():
     def filtrar_receita_por_periodo(self, inicio, fim):
 
         df = self.filtrar_dados_por_periodo(inicio, fim)
-        return df[ (df['Tipo'] == 'Receita') & (~df['Categoria'].isin(['Remunera+', 'Resgate', 'Devolução'])) ]
+        return df[ (df['Tipo'] == 'Receita') ]
 
 
     def receitas_totais_no_periodo(self, inicio, fim):
 
         df = self.filtrar_receita_por_periodo(inicio, fim)
-        receitas_totais = df['Valor efetivo'].sum()
+        receitas_totais = df[df['Tipo'] == 'Receita']['Valor efetivo'].sum()
         return receitas_totais
 
 
-    def get_vendas_por_contato(self, inicio, fim):
+    def receitas_totais_por_clientes_no_periodo(self, inicio, fim):
 
         df = self.filtrar_receita_por_periodo(inicio, fim)
-        return df[df['Categoria'] == 'Vendas'].groupby(['Contato'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=True)
+        receitas_totais_por_clientes = df[(df['Tipo'] == 'Receita') & (df['Categoria'] == 'Receitas')]['Valor efetivo'].sum()
+        return receitas_totais_por_clientes
+
+
+    def receitas_financeiras_no_periodo(self, inicio, fim):
+
+        df = self.filtrar_receita_por_periodo(inicio, fim)
+        receitas_financeira = df[(df['Tipo'] == 'Receita') & (df['Categoria'].isin(['Receitas financeiras', "Remunera+"]))]['Valor efetivo'].sum()
+        return receitas_financeira
+
+
+    def outras_receitas_no_periodo(self, inicio, fim):
+
+        df = self.filtrar_receita_por_periodo(inicio, fim)
+        outras_receitas = df[(df['Tipo'] == 'Receita') & (df['Categoria'] == 'Outras Receitas')]['Valor efetivo'].sum()
+        return outras_receitas
+        # Comissão de vendas
+
+
+    def get_receitas_por_contato(self, inicio, fim):
+
+        df = self.filtrar_receita_por_periodo(inicio, fim)
+        return df[df['Categoria'] == 'Receitas'].groupby(['Contato'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=True)
 
 
 
