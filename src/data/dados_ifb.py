@@ -23,7 +23,7 @@ class dados_ifb():
     def get_conditions_dados_bancarios(self):
 
         file_id = st.secrets['dados']['ifb_data_prep_file_id']
-        sheet_name = 'column_rename'
+        sheet_name = 'column_value_replace'
 
         return download_google_spreadsheet(file_id, sheet_name)
 
