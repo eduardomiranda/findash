@@ -46,6 +46,6 @@ def download_google_spreadsheet(file_id, sheet_name):
         pd.DataFrame: The downloaded Google Spreadsheet as a pandas DataFrame.
     """
 
-    url = f"https://docs.google.com/spreadsheets/d/{file_id}/gviz/tq?tqx=out:csv&sheet={{{sheet_name}}}"
+    url = f"https://docs.google.com/spreadsheets/d/{file_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
     return pd.read_csv(url)
 
