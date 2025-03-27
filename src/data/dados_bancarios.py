@@ -9,7 +9,6 @@ class dados_bancarios():
     def __init__(self, file_id):
 
         self._df = download_csv_from_google_drive(file_id)
-        self.condicoes = self.get_conditions_dados_bancarios()
 
         self.delecao_colunas_desnecessarias()
         self.correcao_tipos_dados()
@@ -18,21 +17,12 @@ class dados_bancarios():
         self.remover_registros_cartao_credito()
         self.anonimizacao_dados_salario()
         self.anonimizacao_dados_bonus()
-        self.rename()
+        self.data_prep()
 
 
     @property
     def df(self):
         return self._df
-
-
-
-    def get_conditions_dados_bancarios(self):
-
-        file_id = st.secrets['dados']['dados_bancarios_data_prep_file_id']
-        sheet_name = 'column_rename'
-
-        return download_google_spreadsheet(file_id, sheet_name)
 
 
 
@@ -126,9 +116,29 @@ class dados_bancarios():
 
 
 
-    def rename(self):
+    def __get_conditions_column_value_replace(self):
 
-        for index, row in self.condicoes.iterrows():
+        file_id = st.secrets['dados']['dados_bancarios_data_prep_file_id']
+        sheet_name = 'column_value_replace'
+
+        return download_google_spreadsheet(file_id, sheet_name)
+
+
+
+    def __get_conditions_categoria_subcategoria_replace(self):
+
+        file_id = st.secrets['dados']['dados_bancarios_data_prep_file_id']
+        sheet_name = 'categoria_subcategoria_replace'
+
+        return download_google_spreadsheet(file_id, sheet_name)
+
+
+
+    def data_prep(self):
+
+        column_value_replace_df = self.__get_conditions_column_value_replace()
+
+        for index, row in column_value_replace_df.iterrows():
             column_name = row['column_name']
 
             if column_name:
@@ -136,6 +146,26 @@ class dados_bancarios():
                 new_value = row['new_value']
 
                 self._df[column_name] = self._df[column_name].replace(old_value, new_value)
+
+
+        categoria_subcategoria_replace_df = self.__get_conditions_categoria_subcategoria_replace()
+
+        for index, row in categoria_subcategoria_replace_df.iterrows():
+
+            old_category    = row['old_category']
+            old_subcategory = row['old_subcategory']
+            new_category    = row['new_category']
+            new_subcategory = row['new_subcategory']
+
+            # Define conditions
+            condition1 = self._df['Categoria'] == old_category
+            condition2 = self._df['Subcategoria'] == old_subcategory
+
+            # Combine conditions (both must be True)
+            mask = condition1 & condition2
+
+            # Replace values in columns C and D where the mask is True
+            self._df.loc[mask, ['Categoria', 'Subcategoria']] = [new_category, new_subcategory]
 
 
 

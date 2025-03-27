@@ -46,6 +46,9 @@ if st.session_state.logged_in:
         gastos_totais = dados_bancarios.gastos_totais_no_periodo(inicio, fim)
         st.metric("Gastos Totais", formar_valor_monetario(gastos_totais), "", border = True )
 
+        if st.button("Show me the data!", type="primary", key = "7563f268-af7a-4ba8-a3d2-fc542e86cc5e"):
+            st.dataframe(dados_bancarios.df)
+
         df_categoria_dresult = dados_bancarios.get_gastos_totais_por_categoria(inicio, fim)
 
 
@@ -86,7 +89,8 @@ if st.session_state.logged_in:
             st.pyplot(chart)
 
             if st.button("Show me the data!", type="primary", key = "6915d7f6-effe-4f58-b589-ae599f594316"):
-                st.dataframe(df_dresult)
+                df = dados_bancarios.get_dados_por_categoria(inicio, fim, categoria_selecionada)
+                st.dataframe(df)
 
         else:
             st.write("Nenhum dado encontrado para a seleção atual.")
