@@ -18,6 +18,8 @@ class dados_bancarios():
         self.remover_registros_transferencias()
         self.remover_registros_categoria_devolucao()
         self.remover_registros_categoria_resgate()
+        self.preencher_registros_sem_categoria()
+        self.preencher_registros_sem_subcategoria()
         # self.remover_registros_cartao_credito()
         self.anonimizacao_dados_salario()
         self.anonimizacao_dados_bonus()
@@ -172,154 +174,108 @@ class dados_bancarios():
 
 
 
-
     def remover_registros_investimentos(self):
-
         index_investimentos = self._df[ self._df['Categoria'] == 'Investimentos' ].index
         self._df.drop(index_investimentos, inplace=True)
 
-
-
     def remover_registros_transferencias(self):
-
         index_transferencias = self._df[ self._df['Categoria'] == 'Transferência' ].index
         self._df.drop(index_transferencias, inplace=True)
 
-
     def remover_registros_categoria_saldo_inicial(self):
-
         index_categoria_resgate = self._df[ (self._df['Tipo'] == 'Saldo inicial') ].index
         self._df.drop(index_categoria_resgate, inplace=True)
 
-
     def remover_registros_categoria_devolucao(self):
-
         index_categoria_resgate = self._df[ (self._df['Tipo'] == 'Receita') & (self._df['Categoria'] == 'Devolução') ].index
         self._df.drop(index_categoria_resgate, inplace=True)
 
-
     def remover_registros_categoria_resgate(self):
-
         index_categoria_resgate = self._df[ (self._df['Tipo'] == 'Receita') & (self._df['Categoria'] == 'Resgate') ].index
         self._df.drop(index_categoria_resgate, inplace=True)
 
+    def preencher_registros_sem_categoria(self):
+        self._df['Categoria'] = self._df['Categoria'].fillna('Não categorizado 🤷') 
+
+    def preencher_registros_sem_subcategoria(self):
+        self._df['Subcategoria'] = self._df['Subcategoria'].fillna('Não categorizado 🤷') 
 
     def remover_registros_cartao_credito(self):
-
         index_cartao_credito = self._df[ self._df['Subcategoria'] == 'Cartão de créditos' ].index
         self._df.drop(index_cartao_credito, inplace=True)
 
-
     def filtrar_dados_por_periodo(self, inicio, fim):
-
         return self._df.loc[(self._df['Data efetiva'] >= inicio) & (self._df['Data efetiva'] <= fim)]
 
-
-
     def filtrar_receita_por_periodo(self, inicio, fim):
-
         df = self.filtrar_dados_por_periodo(inicio, fim)
         return df[ (df['Tipo'] == 'Receita') ]
 
-
     def receitas_totais_no_periodo(self, inicio, fim):
-
         df = self.filtrar_receita_por_periodo(inicio, fim)
         receitas_totais = df[df['Tipo'] == 'Receita']['Valor efetivo'].sum()
         return receitas_totais
 
-
     def receitas_totais_por_clientes_no_periodo(self, inicio, fim):
-
         df = self.filtrar_receita_por_periodo(inicio, fim)
         receitas_totais_por_clientes = df[(df['Tipo'] == 'Receita') & (df['Categoria'] == 'Receitas')]['Valor efetivo'].sum()
         return receitas_totais_por_clientes
 
-
     def receitas_financeiras_no_periodo(self, inicio, fim):
-
         df = self.filtrar_receita_por_periodo(inicio, fim)
         receitas_financeira = df[(df['Tipo'] == 'Receita') & (df['Categoria'].isin(['Receitas financeiras', "Remunera+"]))]['Valor efetivo'].sum()
         return receitas_financeira
 
-
     def outras_receitas_no_periodo(self, inicio, fim):
-
         df = self.filtrar_receita_por_periodo(inicio, fim)
         outras_receitas = df[(df['Tipo'] == 'Receita') & (df['Categoria'] == 'Outras Receitas')]['Valor efetivo'].sum()
         return outras_receitas
-        # Comissão de vendas
-
 
     def get_receitas_por_contato(self, inicio, fim):
-
         df = self.filtrar_receita_por_periodo(inicio, fim)
         return df[df['Categoria'] == 'Receitas'].groupby(['Contato'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=True)
 
-
-
     def filtrar_despesas_por_periodo(self, inicio, fim):
-
         df = self.filtrar_dados_por_periodo(inicio, fim)
         return df[ df['Tipo'] == 'Despesa']
 
-
     def gastos_totais_no_periodo(self, inicio, fim):
-
         df = self.filtrar_despesas_por_periodo(inicio, fim)
         gastos_totais = df['Valor efetivo'].sum()
         return gastos_totais
 
-
     def get_gastos_totais_por_categoria(self, inicio, fim):
-
         df = self.filtrar_despesas_por_periodo(inicio, fim)
         return df.groupby(['Categoria'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=False)
 
-
     def get_categorias(self, inicio, fim):
-
         df = self.filtrar_despesas_por_periodo(inicio, fim)
         return df['Categoria'].unique()
 
-
     def get_dados_por_categoria(self, inicio, fim, categoria):
-
         df = self.filtrar_despesas_por_periodo(inicio, fim)
         return df[df['Categoria'] == categoria].sort_values('Valor efetivo', ascending=True)
 
-
     def get_subcategorias(self, inicio, fim, categoria):
-
         df = self.filtrar_despesas_por_periodo(inicio, fim)
         return df[df['Categoria'] == categoria]['Subcategoria'].unique()
 
-
     def existem_dados_para_a_categoria(self, inicio, fim, categoria):
-
         df = self.filtrar_despesas_por_periodo(inicio, fim)
         return df[df['Categoria'] == categoria].empty
 
-
     def get_gastos_totais_por_categoria_e_subcategoria(self, inicio, fim, categoria):
-
         df = self.get_dados_por_categoria(inicio, fim, categoria)
         return df.groupby(['Categoria','Subcategoria'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=False)
 
-
     def get_gastos_totais_por_categoria_e_contato(self, inicio, fim, categoria):
-
         df = self.get_dados_por_categoria(inicio, fim, categoria)
         return df.groupby(['Categoria','Contato'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=False)
 
-
     def get_gastos_de_projetos(self, inicio, fim):
-
         df = self.filtrar_despesas_por_periodo(inicio, fim)
         return df[ df['Projeto'] != 'Sem projeto']
 
-
     def get_gastos_totais_por_projeto(self, inicio, fim):
-
         df = self.get_gastos_de_projetos(inicio, fim)
         return df.groupby(['Projeto'])['Valor efetivo'].sum().reset_index().sort_values('Valor efetivo', ascending=False)
