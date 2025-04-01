@@ -11,7 +11,7 @@ import pandas as pd
 
 from streamlit_option_menu import option_menu
 
-from src.data.dados_bancarios import dados_bancarios
+from src.utils.data_loader import get_dados_bancarios
 from src.utils.myplot import barh_chart, pie_chart
 from src.utils.login import streamit_login
 from src.utils.misc import formar_valor_monetario
@@ -23,13 +23,8 @@ streamit_login()
 
 if st.session_state.logged_in:
 
-    if 'dados_bancarios' not in st.session_state:
-
-        file_id = st.secrets['dados']['dados_bancarios_file_id']
-        dados_banc = dados_bancarios(file_id)
-        st.session_state.dados_bancarios = dados_banc
-
-    dados_bancarios = st.session_state.dados_bancarios
+    with st.spinner("Obtendo dados...", show_time=True):
+        dados_bancarios = get_dados_bancarios()
 
     col11, col12 = st.columns(2)
     inicio = col11.date_input("Início", datetime.date(2024, 1, 1))

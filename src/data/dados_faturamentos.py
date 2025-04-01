@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 
-from src.data.data_loader import download_google_spreadsheet
+from src.data.download_data import download_google_spreadsheet
 from src.database.mongo_connection import consulta_varios_documentos
 
 class dados_faturamentos():
@@ -21,7 +21,7 @@ class dados_faturamentos():
 
     @property
     def df(self):
-        return self._df
+        return self._df.copy()
 
 
 

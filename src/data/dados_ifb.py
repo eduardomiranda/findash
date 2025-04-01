@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 
-from src.data.data_loader import download_google_spreadsheet
+from src.data.download_data import download_google_spreadsheet
 
 class dados_ifb():
 
@@ -17,7 +17,7 @@ class dados_ifb():
 
     @property
     def df(self):
-        return self._df
+        return self._df.copy()
 
 
     def get_conditions_dados_bancarios(self):
@@ -48,7 +48,8 @@ class dados_ifb():
 
         # Convert the string column to datetime with the correct format
         self._df['Date'] = pd.to_datetime(self._df['Date']).dt.date
-        self._df['Date'] = pd.to_datetime(self._df['Date'], dayfirst=True, format='%m/%d/%Y')
+        # self._df['Date'] = pd.to_datetime(self._df['Date'], dayfirst=True, format='%m/%d/%Y')
+        self._df['Date'] = pd.to_datetime(self._df['Date'], dayfirst=True, format='%Y-%m-%d')
 
 
     def rename(self):

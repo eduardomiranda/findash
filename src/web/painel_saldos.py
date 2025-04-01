@@ -10,7 +10,7 @@ import pandas as pd
 
 from streamlit_option_menu import option_menu
 
-from src.data.dados_saldos import dados_saldos
+from src.utils.data_loader import get_dados_saldos
 from src.utils.myplot import barh_chart, pie_chart
 from src.utils.login import streamit_login
 from src.utils.misc import formar_valor_monetario, converter_data_para_formato_brasileiro
@@ -22,13 +22,9 @@ streamit_login()
 
 if st.session_state.logged_in:
 
-    if 'dados_saldos' not in st.session_state:
-        file_id = st.secrets['dados']['saldos_bancarios_file_id']
-        sheet_name = st.secrets['dados']['saldos_bancarios_sheet_name']
-        dados_sald = dados_saldos(file_id, sheet_name)
-        st.session_state.dados_saldos = dados_sald
+    with st.spinner("Obtendo dados...", show_time=True):
+        dados_saldos = get_dados_saldos()
 
-    dados_saldos = st.session_state.dados_saldos
 
     st.markdown(f'⚠️ Os valores apresentados foram obtidos no dia: **{converter_data_para_formato_brasileiro(str(dados_saldos.ultima_data))}**')
 

@@ -11,7 +11,7 @@ import pandas as pd
 
 from streamlit_option_menu import option_menu
 
-from src.data.dados_ifb import dados_ifb
+from src.utils.data_loader import get_dados_ifb
 from src.utils.myplot import barh_chart, pie_chart
 from src.utils.login import streamit_login
 from src.utils.misc import formar_valor_monetario
@@ -23,14 +23,9 @@ streamit_login()
 
 if st.session_state.logged_in:
 
-    if 'dados_ifb' not in st.session_state:
-        file_id = st.secrets['dados']['ifb_file_id']
-        sheet_name = st.secrets['dados']['ifb_sheet_name']
+    with st.spinner("Obtendo dados...", show_time=True):
+        dados_ifb = get_dados_ifb()
 
-        dados_ifb = dados_ifb(file_id, sheet_name)
-        st.session_state.dados_ifb = dados_ifb
-
-    dados_ifb = st.session_state.dados_ifb
 
     df_result = dados_ifb.agrupa_por_descricao()
 

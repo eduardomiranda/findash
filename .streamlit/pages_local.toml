@@ -31,3 +31,9 @@ icon = "🧾"
 path = "painel_llc.py"
 name = "Century Data LLC"
 icon = "🇺🇸"
+
+
+[[pages]]
+path = "painel_pandasai.py"
+name = "Falar com a IA [Beta]"
+icon = "🤖"

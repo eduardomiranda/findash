@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 
-from src.data.data_loader import download_google_spreadsheet
+from src.data.download_data import download_google_spreadsheet
 
 class dados_saldos():
 
@@ -17,7 +17,7 @@ class dados_saldos():
 
     @property
     def df(self):
-        return self._df
+        return self._df.copy()
 
 
     @property

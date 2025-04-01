@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 from datetime import datetime, date
 
-from src.data.data_loader import download_csv_from_google_drive, download_google_spreadsheet
+from src.data.download_data import download_csv_from_google_drive, download_google_spreadsheet
 
 class dados_bancarios():
 
@@ -27,7 +27,7 @@ class dados_bancarios():
 
     @property
     def df(self):
-        return self._df
+        return self._df.copy()
 
 
 
